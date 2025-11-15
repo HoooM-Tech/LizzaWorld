@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-heading: "Playfair Display", serif;
+  --font-body: "Lato", sans-serif;
+}
+
+body {
+  background-color: #fffff0;
+  color: #1b1b1b;
+  font-family: var(--font-body);
+}
+
+::selection {
+  background-color: #f7e7ce;
+  color: #1b1b1b;
+}
+
+img {
+  @apply rounded-2xl;
+}
+
+button {
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory;
+}
