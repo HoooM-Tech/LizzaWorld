@@ -27,9 +27,9 @@ export default function ConsultationPage() {
         </p>
       </header>
       <Section title="Categories">
-        <Accordion>
+        <Accordion type="multiple">
           {Object.entries(categoryDetails).map(([category, items]) => (
-            <AccordionItem key={category}>
+            <AccordionItem key={category} value={category}>
               <AccordionTrigger>{category}</AccordionTrigger>
               <AccordionContent>
                 {items.length > 0 ? (
