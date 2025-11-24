@@ -2,7 +2,13 @@
 
 import { motion } from "framer-motion";
 
-const steps = [
+type Step = {
+  title: string;
+  body?: string;
+  description?: string;
+};
+
+const fallbackSteps: Step[] = [
   {
     title: "Consultation",
     description:
@@ -20,10 +26,12 @@ const steps = [
   }
 ];
 
-export function ProcessSteps() {
+export function ProcessSteps({ steps }: { steps?: Step[] }) {
+  const processSteps = steps?.length ? steps : fallbackSteps;
+
   return (
     <div className="grid gap-6 md:grid-cols-3">
-      {steps.map((step, index) => (
+      {processSteps.map((step, index) => (
         <motion.div
           key={step.title}
           className="rounded-2xl border border-charcoal/10 bg-white/70 p-8 shadow-soft"
@@ -34,7 +42,7 @@ export function ProcessSteps() {
         >
           <p className="text-sm uppercase tracking-[0.3em] text-charcoal/40">Step {index + 1}</p>
           <h3 className="mt-4 font-display text-2xl text-charcoal">{step.title}</h3>
-          <p className="mt-4 text-sm leading-relaxed text-charcoal/70">{step.description}</p>
+          <p className="mt-4 text-sm leading-relaxed text-charcoal/70">{step.description ?? step.body}</p>
         </motion.div>
       ))}
     </div>
