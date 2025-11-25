@@ -1,6 +1,9 @@
 {
   "name": "lizza-atelier",
   "version": "1.0.0",
+  "overrides": {
+    "@sanity/ui": "^3.1.11"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",
