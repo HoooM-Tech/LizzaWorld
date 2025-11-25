@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ type CTA = {
 };
 
 interface HeroProps {
-  image?: string;
+  video?: string;
   headline?: string;
   subtext?: string;
   ctas?: CTA[];
@@ -23,7 +22,7 @@ const fadeUp = {
   transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] }
 };
 
-export function Hero({ image, headline, subtext, ctas }: HeroProps) {
+export function Hero({ video, headline, subtext, ctas }: HeroProps) {
   const defaultCtas: CTA[] = [
     { label: "Shop Ready-to-Wear", href: "/shop" },
     { label: "Discover Bespoke", href: "/bespoke" },
@@ -35,14 +34,13 @@ export function Hero({ image, headline, subtext, ctas }: HeroProps) {
 
   return (
     <section className="relative h-[70vh] min-h-[540px] overflow-hidden rounded-2xl bg-charcoal text-ivory">
-      <Image
-        src={image ?? "/hero.jpg"}
-        alt="Lizza Atelier couture silhouette"
-        fill
-        priority
-        sizes="100vw"
-        unoptimized
-        className="object-cover object-center opacity-70"
+      <video
+        src={video ?? "/hero.mp4"}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover object-center opacity-70"
       />
       <div className="absolute inset-0 bg-charcoal/40" />
       <div className="relative z-10 flex h-full flex-col items-start justify-center gap-8 px-6 py-16 sm:px-12 lg:px-24">
