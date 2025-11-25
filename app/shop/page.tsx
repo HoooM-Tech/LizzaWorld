@@ -19,7 +19,7 @@ export default async function ShopPage() {
     description: product?.description,
     priceNaira: product?.priceNaira ?? 0,
     sizes: product?.sizes ?? [],
-    image: product?.images?.length ? urlFor(product.images[0]).url() : "/images/lizzaa/img-7.png",
+    image: product?.images?.length ? urlFor(product.images[0]).url() : "/images/lizzaa/img-17.png",
     orderLink: product?.orderLink,
     isAvailable: product?.isAvailable ?? true
   }));
