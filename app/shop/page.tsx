@@ -6,23 +6,35 @@ import { CtaBanner } from "@/components/cta-banner";
 import { sanityClient } from "@/sanity/lib/client";
 import { featuredCollectionQuery, productsByCollectionQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
+// 1. IMPORT YOUR LOCAL DATA AS A FALLBACK
+import { products as fallbackProducts } from "@/data/products";
 
 export default async function ShopPage() {
+  // Fetch data from Sanity
   const featuredCollection = await sanityClient.fetch(featuredCollectionQuery);
   const collectionSlug = featuredCollection?.slug?.current;
+  
   const productsData = collectionSlug
     ? await sanityClient.fetch(productsByCollectionQuery(collectionSlug))
     : [];
 
-  const products = (productsData ?? []).map((product: any) => ({
-    title: product?.title,
-    description: product?.description,
-    priceNaira: product?.priceNaira ?? 0,
-    sizes: product?.sizes ?? [],
-    image: product?.images?.length ? urlFor(product.images[0]).url() : "/images/lizzaa/img-17.png",
-    orderLink: product?.orderLink,
-    isAvailable: product?.isAvailable ?? true
-  }));
+  console.log("Sanity Products Found:", productsData?.length || 0);
+  let products = [];
+
+  if (productsData && productsData.length > 0) {
+    products = productsData.map((product: any) => ({
+      id: product._id, 
+      title: product?.title,
+      description: product?.description,
+      priceNaira: product?.priceNaira ?? 0,
+      sizes: product?.sizes ?? [],
+      image: product?.images?.length ? urlFor(product.images[0]).url() : "/images/lizzaa/img-17.png",
+      orderLink: product?.orderLink,
+      isAvailable: product?.isAvailable ?? true
+    }));
+  } else {
+    products = fallbackProducts;
+  }
 
   const editorialImages = featuredCollection?.editorialImages?.map((image: unknown) => urlFor(image).url()) ?? [
     "/images/lizzaa/img-7.png",
@@ -42,12 +54,13 @@ export default async function ShopPage() {
         <p className="max-w-3xl text-lg leading-relaxed text-charcoal/70">{introCopy}</p>
       </header>
       <Section>
+        {/* Render the calculated products list */}
         <ProductGrid products={products} />
       </Section>
       <SizeGuide />
       <div className="grid gap-6">
         {editorialImages.map((image: any, index: any) => (
-          <div key={image} className="relative h-[360px] overflow-hidden rounded-2xl">
+          <div key={index} className="relative h-[360px] overflow-hidden rounded-2xl">
             <Image
               src={image}
               alt={`Eminence editorial ${index + 1}`}

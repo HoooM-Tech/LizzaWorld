@@ -1,17 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/data/products";
 
-// export type Product = {
-//   title: string;
-//   description: string;
-//   priceNaira: number;
-//   sizes: string[];
-//   image: string;
-//   orderLink?: string;
-//   isAvailable?: boolean;
-// };
+export type Product = {
+  title: string;
+  description: string;
+  priceNaira: number;
+  sizes: string[];
+  image: string;
+  orderLink?: string;
+  isAvailable?: boolean;
+};
 
 const formatter = new Intl.NumberFormat("en-NG", {
   style: "currency",

@@ -10,7 +10,7 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-charcoal text-ivory hover:bg-charcoal/90",
         outline:
-          "border border-charcoal/20 bg-transparent text-charcoal hover:border-charcoal hover:bg-charcoal hover:text-ivory",
+          "border border-[#ffff] bg-transparent text-[#ffff] hover:border-charcoal hover:bg-charcoal hover:text-ivory",
         ghost: "bg-transparent text-charcoal hover:bg-charcoal/5"
       },
       size: {
