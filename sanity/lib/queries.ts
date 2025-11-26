@@ -1,6 +1,13 @@
 export const siteSettingsQuery = `*[_type=="siteSettings"][0]`;
 
 export const homePageQuery = `
+
+heroMedia {
+  asset-> {
+    url
+  }
+}
+
 *[_type=="homePage"][0]{
   heroMedia, heroHeadline, heroSubtext, brandIntro, ctas,
   featuredVisuals,
