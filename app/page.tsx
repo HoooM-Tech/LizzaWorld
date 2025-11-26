@@ -15,8 +15,14 @@ export default async function HomePage() {
   ]);
 
   // For video files, access the asset URL directly
-  //const heroVideo = homeData?.heroMedia ? urlFor(homeData.heroMedia).url() : undefined;
-  const heroVideo = "/hero.mp4";
+  //const heroImage = homeData?.heroMedia ? urlFor(homeData.heroMedia).url() : undefined;
+  
+
+  
+  // 1. Get the Video URL directly from the asset object
+  // It will look like: "https://cdn.sanity.io/files/project/dataset/filename.mp4"
+  const heroVideoUrl = homeData?.heroVideo?.asset?.url;
+
 
   const featuredVisuals = homeData?.featuredVisuals?.map((image: unknown) => urlFor(image).url());
   const testimonials = homeData?.testimonials?.map((testimonial: any) => ({
@@ -33,7 +39,7 @@ export default async function HomePage() {
   return (
     <div className="space-y-20">
       <Hero
-        video={heroVideo}
+        video={heroVideoUrl} 
         headline={homeData?.heroHeadline}
         subtext={homeData?.heroSubtext}
         ctas={ctas}

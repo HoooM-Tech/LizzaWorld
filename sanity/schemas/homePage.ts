@@ -3,7 +3,8 @@ export default {
   title: "Home Page",
   type: "document",
   fields: [
-    { name: "heroMedia", title: "Hero Image", type: "image", options: { hotspot: true } },
+    //{ name: "heroMedia", title: "Hero Image", type: "image", options: { hotspot: true } },
+    { name: "heroVideo", title: "Hero Video", type: "file", options: { hotspot: true, accept: "video/*" }, },
     { name: "heroHeadline", title: "Hero Headline", type: "string" },
     { name: "heroSubtext", title: "Hero Subtext", type: "text" },
     { name: "brandIntro", title: "Brand Intro", type: "text" },
