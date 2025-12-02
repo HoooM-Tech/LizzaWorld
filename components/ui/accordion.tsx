@@ -8,7 +8,7 @@ export function Accordion({ className, ...props }: HTMLAttributes<HTMLDivElement
 }
 
 export function AccordionItem({ children }: { children: ReactNode }) {
-  return <details className="group rounded-2xl border border-charcoal/15 bg-white/70 p-6 shadow-soft/10">{children}</details>;
+  return <details className="group border border-charcoal/15 bg-white/70 p-6 shadow-soft/10">{children}</details>;
 }
 
 export function AccordionTrigger({ children }: { children: ReactNode }) {

@@ -20,15 +20,15 @@ const formatter = new Intl.NumberFormat("en-NG", {
 
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl border border-charcoal/10 bg-white/80 shadow-soft">
-      <div className="relative aspect-[3/4] overflow-hidden">
+    <article className="flex flex-col overflow-hidden border border-charcoal/10 bg-white/80 shadow-soft">
+      <div className="relative aspect-[4/5] overflow-hidden">
         <Image
           src={product.image}
           alt={product.title}
           fill
           sizes="(min-width: 1024px) 33vw, (min-width: 768px) 45vw, 100vw"
           unoptimized
-          className="object-cover transition duration-700 hover:scale-105"
+          className="object-cover transition duration-700 hover:scale-105 rounded-sm"
         />
       </div>
       <div className="flex flex-1 flex-col gap-4 p-6">
@@ -45,8 +45,8 @@ export function ProductCard({ product }: { product: Product }) {
             {product.isAvailable ? "Add to Cart" : "Sold Out"}
           </Button>
           {product.orderLink && (
-            <Button variant="outline" asChild>
-              <Link href={product.orderLink} target="_blank" rel="noreferrer">
+            <Button variant="outline" asChild className="border-charcoal/20 flex-1">
+              <Link className="text-charcoal" href={product.orderLink} target="_blank" rel="noreferrer">
                 View Look
               </Link>
             </Button>

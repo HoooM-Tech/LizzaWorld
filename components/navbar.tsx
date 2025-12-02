@@ -32,9 +32,9 @@ export function Navbar() {
             </span>
             {/* Mobile: Show image logo */}
             <img
-              src="/logo.jpg"
+              src="/logo.png"
               alt="Lizza Atelier"
-              className="md:hidden h-16 w-auto"
+              className="md:hidden h-12 w-12 object-contain "
             />
           </Link>
 

@@ -1,16 +1,10 @@
-import Image from "next/image";
-import { ProductGrid } from "@/components/product-grid";
-import { Section } from "@/components/section";
-import { SizeGuide } from "@/components/size-guide";
-import { CtaBanner } from "@/components/cta-banner";
 import { sanityClient } from "@/sanity/lib/client";
 import { featuredCollectionQuery, productsByCollectionQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
-// 1. IMPORT YOUR LOCAL DATA AS A FALLBACK
 import { products as fallbackProducts } from "@/data/products";
+import ShopPageClient from "@/components/shop-page-client";
 
 export default async function ShopPage() {
-  // Fetch data from Sanity
   const featuredCollection = await sanityClient.fetch(featuredCollectionQuery);
   const collectionSlug = featuredCollection?.slug?.current;
   
@@ -18,7 +12,6 @@ export default async function ShopPage() {
     ? await sanityClient.fetch(productsByCollectionQuery(collectionSlug))
     : [];
 
-  console.log("Sanity Products Found:", productsData?.length || 0);
   let products = [];
 
   if (productsData && productsData.length > 0) {
@@ -42,37 +35,93 @@ export default async function ShopPage() {
     "/images/lizzaa/img-9.png"
   ];
 
+  // Fetch similar products from Sanity or use regular products as fallback
+const similarProducts = featuredCollection?.similarProducts?.length
+    ? featuredCollection.similarProducts.map((product: any) => ({
+        id: product._id,
+        title: product?.title,
+        description: product?.description,
+        priceNaira: product?.priceNaira ?? 0,
+        sizes: product?.sizes ?? [],
+        image: product?.images?.length ? urlFor(product.images[0]).url() : "/images/lizzaa/img-17.png",
+        orderLink: product?.orderLink,
+        isAvailable: product?.isAvailable ?? true
+      }))
+    : [
+        {
+          id: "similar-1",
+          title: "Silk Evening Gown",
+          description: "Flowing elegance in luxurious silk charmeuse",
+          priceNaira: 185000,
+          sizes: ["S", "M", "L"],
+          image: "/images/lizzaa/img-10.png",
+          orderLink: "https://www.instagram.com/lizza.atelier",
+          isAvailable: true
+        },
+        {
+          id: "similar-2",
+          title: "Tailored Blazer Set",
+          description: "Sharp sophistication for the modern woman",
+          priceNaira: 165000,
+          sizes: ["XS", "S", "M", "L"],
+          image: "/images/lizzaa/img-11.png",
+          orderLink: "https://www.instagram.com/lizza.atelier",
+          isAvailable: true
+        },
+        {
+          id: "similar-3",
+          title: "Draped Midi Dress",
+          description: "Effortless grace with contemporary draping",
+          priceNaira: 145000,
+          sizes: ["S", "M", "L", "XL"],
+          image: "/images/lizzaa/img-12.png",
+          orderLink: "https://www.instagram.com/lizza.atelier",
+          isAvailable: true
+        },
+        {
+          id: "similar-4",
+          title: "Structured Coat",
+          description: "Timeless outerwear crafted for impact",
+          priceNaira: 220000,
+          sizes: ["S", "M", "L"],
+          image: "/images/lizzaa/img-13.png",
+          orderLink: "https://www.instagram.com/lizza.atelier",
+          isAvailable: true
+        },
+        {
+          id: "similar-5",
+          title: "Asymmetric Wrap Top",
+          description: "Bold lines meet feminine fluidity",
+          priceNaira: 98000,
+          sizes: ["XS", "S", "M", "L", "XL"],
+          image: "/images/lizzaa/img-14.png",
+          orderLink: "https://www.instagram.com/lizza.atelier",
+          isAvailable: true
+        },
+        {
+          id: "similar-6",
+          title: "Wide-Leg Trousers",
+          description: "Classic silhouette with modern proportions",
+          priceNaira: 125000,
+          sizes: ["S", "M", "L", "XL"],
+          image: "/images/lizzaa/img-15.png",
+          orderLink: "https://www.instagram.com/lizza.atelier",
+          isAvailable: true
+        }
+      ];
+
   const collectionTitle = featuredCollection?.title ?? "Eminence Collection";
   const introCopy =
     featuredCollection?.introCopy ??
     "The Eminence Collection celebrates the elegance of power and purpose. Designed for women who lead with confidence and grace, each piece reflects refined craftsmanship, modern femininity, and timeless allure.";
 
   return (
-    <div className="space-y-16">
-      <header className="space-y-6">
-        <h1 className="font-display text-4xl sm:text-5xl">{collectionTitle}</h1>
-        <p className="max-w-3xl text-lg leading-relaxed text-charcoal/70">{introCopy}</p>
-      </header>
-      <Section>
-        {/* Render the calculated products list */}
-        <ProductGrid products={products} />
-      </Section>
-      <SizeGuide />
-      <div className="grid gap-6">
-        {editorialImages.map((image: any, index: any) => (
-          <div key={index} className="relative h-[360px] overflow-hidden rounded-2xl">
-            <Image
-              src={image}
-              alt={`Eminence editorial ${index + 1}`}
-              fill
-              sizes="(min-width: 1024px) 60vw, 100vw"
-              unoptimized
-              className="object-cover"
-            />
-          </div>
-        ))}
-      </div>
-      <CtaBanner title="Shop the Collection" ctaLabel="View the Lookbook" href="/shop" />
-    </div>
+    <ShopPageClient
+      products={products}
+      editorialImages={editorialImages}
+      collectionTitle={collectionTitle}
+      introCopy={introCopy}
+      similarProducts={similarProducts}
+    />
   );
 }

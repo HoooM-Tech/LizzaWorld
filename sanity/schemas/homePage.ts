@@ -25,6 +25,18 @@ export default {
         { label: "Book a Consultation", href: "#consultation" },
       ],
     },
+        {
+      name: "processSteps",
+      title: "Process Steps",
+      type: "array",
+      of: [{
+        type: "object",
+        fields: [
+          { name: "title", type: "string" },
+          { name: "body", type: "text" },
+        ],
+      }],
+    },
     {
       name: "featuredVisuals",
       title: "Featured Visuals",

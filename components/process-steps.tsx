@@ -34,7 +34,7 @@ export function ProcessSteps({ steps }: { steps?: Step[] }) {
       {processSteps.map((step, index) => (
         <motion.div
           key={step.title}
-          className="rounded-2xl border border-charcoal/10 bg-white/70 p-8 shadow-soft"
+          className="border border-charcoal/10 bg-white/70 p-8 shadow-soft"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}

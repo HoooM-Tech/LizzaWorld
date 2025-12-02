@@ -7,12 +7,20 @@ import { CtaBanner } from "@/components/cta-banner";
 import { sanityClient } from "@/sanity/lib/client";
 import { homePageQuery, siteSettingsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
+import { ProcessSteps } from "@/components/process-steps";
+import WhyChooseUs from "@/components/why-choose-us";
 
 export default async function HomePage() {
+  
   const [homeData, siteSettings] = await Promise.all([
     sanityClient.fetch(homePageQuery),
     sanityClient.fetch(siteSettingsQuery)
   ]);
+  
+  const processSteps = homeData?.processSteps?.map((step: any) => ({
+    title: step?.title,
+    description: step?.body
+  }));
 
   // For video files, access the asset URL directly
   //const heroImage = homeData?.heroMedia ? urlFor(homeData.heroMedia).url() : undefined;
@@ -44,20 +52,27 @@ export default async function HomePage() {
         subtext={homeData?.heroSubtext}
         ctas={ctas}
       />
-      <Section title="About the Atelier">
-        <p className="max-w-3xl text-lg leading-relaxed text-charcoal/70">{brandIntro}</p>
+      <Section title="About the Atelier" className="flex justify-end text-end">
+        <p className="max-w-3xl text-xl leading-relaxed text-charcoal/70">{brandIntro}</p>
       </Section>
+      <CtaBanner title="Discover Timeless Pieces" ctaLabel="Visit Shop" href="/shop" />
       <Section>
         <FeaturedGrid images={featuredVisuals} />
+      </Section>
+      <Section title="Our Process">
+        <ProcessSteps steps={processSteps} />
       </Section>
       <Section title="Testimonials">
         <Testimonials items={testimonials} />
       </Section>
-      {homeData?.showInstagramEmbed !== false && (
+      <Section title="Why Choose Us">
+        <WhyChooseUs />
+      </Section>
+      {/* {homeData?.showInstagramEmbed !== false && (
         <Section>
           <InstagramFeed handle={instagramHandle} />
         </Section>
-      )}
+      )} */}
       <CtaBanner title="Begin Your Journey" ctaLabel="Book a Consultation" href="/consultation" />
     </div>
   );
