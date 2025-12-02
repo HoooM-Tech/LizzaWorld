@@ -49,15 +49,15 @@ export default async function BespokePage() {
       {/* Coming Soon Section */}
       <Section>
         <div className="relative w-full max-w-4xl mx-auto">
-          <div className="relative aspect-[16/9] overflow-hidden bg-charcoal">
+          <div className="relative aspect-[3/4] md:aspect-[16/9] overflow-hidden bg-charcoal">
             <Image
               src="/bridal.jpg"
               alt="Lizza Atelier Bespoke Collection Coming Soon"
               fill
-              className="object-cover grayscale opacity-60 rounded-sm"
+              className="object-cover grayscale opacity-60 rounded-none"
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-charcoal/40">
-              <p className="mt-12 text-md uppercase tracking-[0.35em] text-champagne mb-4">
+              <p className="mt-5 md:mt-12 text-md uppercase tracking-[0.35em] text-champagne mb-4">
                 Launching Soon
               </p>
               <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl text-ivory text-center px-6">
