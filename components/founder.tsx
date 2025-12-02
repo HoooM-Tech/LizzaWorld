@@ -25,14 +25,14 @@ export function Founder({ name, title, shortBio, portrait }: FounderProps) {
           <p>{displayBio}</p>
         </div>
       </div>
-      <div className="relative h-[420px] overflow-hidden rounded-2xl shadow-soft">
+      <div className="relative h-[420px] overflow-hidden ">
         <Image
           src={imageSrc}
           alt="Elizabeth Akinola portrait"
           fill
           sizes="(min-width: 1024px) 40vw, 100vw"
           unoptimized
-          className="object-cover"
+          className="object-cover rounded-none"
         />
       </div>
     </div>

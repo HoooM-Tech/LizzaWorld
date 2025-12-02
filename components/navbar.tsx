@@ -7,6 +7,7 @@ import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { CartDrawer } from "@/components/cart-drawer";
 import { SearchDialog } from "@/components/search-dialog";
+import { useCart } from "@/components/cart-context";
 
 const links = [
   { href: "/", label: "Home" },
@@ -19,6 +20,10 @@ export function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { items } = useCart();
+
+  // Calculate total number of items in cart
+  const cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <>
@@ -34,7 +39,7 @@ export function Navbar() {
             <img
               src="/logo.png"
               alt="Lizza Atelier"
-              className="md:hidden h-12 w-12 object-contain "
+              className="md:hidden h-12 w-12 object-contain rounded-none"
             />
           </Link>
 
@@ -58,8 +63,19 @@ export function Navbar() {
                 <Instagram className="h-5 w-5" />
               </Link>
             </Button>
-            <Button variant="ghost" size="icon" aria-label="View cart" onClick={() => setIsCartOpen(true)}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              aria-label="View cart" 
+              onClick={() => setIsCartOpen(true)}
+              className="relative"
+            >
               <ShoppingCart className="h-5 w-5" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-charcoal text-[10px] font-semibold text-ivory">
+                  {cartItemCount > 99 ? '99+' : cartItemCount}
+                </span>
+              )}
             </Button>
 
             {/* Mobile Hamburger Menu */}
@@ -113,4 +129,4 @@ export function Navbar() {
       <SearchDialog open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
-}
+} 

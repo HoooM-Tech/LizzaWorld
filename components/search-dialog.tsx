@@ -38,7 +38,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
     >
       <div
         className={cn(
-          "mt-24 w-full max-w-2xl rounded-2xl border border-charcoal/10 bg-ivory p-8 shadow-soft",
+          "mt-24 w-full max-w-2xl rounded-2xl border border-charcoal/10 bg-ivory p-8 ",
           "animate-in zoom-in-95 slide-in-from-top-2 duration-200"
         )}
         onClick={(e) => e.stopPropagation()}

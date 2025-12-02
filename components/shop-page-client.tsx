@@ -92,7 +92,7 @@ export default function ShopPageClient({
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                       unoptimized
-                      className="rounded-sm object-cover transition-all duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                      className="rounded-none object-cover transition-all duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
                     />
                     
                     <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/20 transition-all duration-500 flex items-center justify-center">
