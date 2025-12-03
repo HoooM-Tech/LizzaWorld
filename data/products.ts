@@ -13,7 +13,7 @@ export const products: Product[] = [
   {
     id: "marvella-suit-dress",
     title: "Marvella Suit Dress",
-    priceNaira: 20,
+    priceNaira: 205000,
     image: "/images/lizzaa/img-14.png",
     description:
       "A sculpted power-suit dress crafted for the woman who leads with grace. Precision tailoring, clean lines, and a silhouette that commands attention — sophistication redefined.",

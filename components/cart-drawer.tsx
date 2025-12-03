@@ -255,7 +255,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                 <Button
                   variant="outline"
                   onClick={() => setShowEmailModal(false)}
-                  className="flex-1"
+                  className="flex-1 border-charcoal/20 text-charcoal"
                 >
                   Cancel
                 </Button>
