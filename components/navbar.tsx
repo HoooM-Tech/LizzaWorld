@@ -39,7 +39,7 @@ export function Navbar() {
             <img
               src="/logo.png"
               alt="Lizza Atelier"
-              className="md:hidden h-12 w-12 object-contain rounded-none"
+              className="md:hidden h-9 w-9 object-contain rounded-none"
             />
           </Link>
 
