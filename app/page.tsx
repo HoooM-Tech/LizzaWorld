@@ -4,6 +4,7 @@ import { FeaturedGrid } from "@/components/featured-grid";
 import { Testimonials } from "@/components/testimonials";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { CtaBanner } from "@/components/cta-banner";
+import { Container } from "@/components/container";
 import { sanityClient } from "@/sanity/lib/client";
 import { homePageQuery, siteSettingsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
@@ -22,15 +23,8 @@ export default async function HomePage() {
     description: step?.body
   }));
 
-  // For video files, access the asset URL directly
-  //const heroImage = homeData?.heroMedia ? urlFor(homeData.heroMedia).url() : undefined;
-  
-
-  
-  // 1. Get the Video URL directly from the asset object
-  // It will look like: "https://cdn.sanity.io/files/project/dataset/filename.mp4"
+  // Get the Video URL directly from the asset object
   const heroVideoUrl = homeData?.heroVideo?.asset?.url;
-
 
   const featuredVisuals = homeData?.featuredVisuals?.map((image: unknown) => urlFor(image).url());
   const testimonials = homeData?.testimonials?.map((testimonial: any) => ({
@@ -45,35 +39,37 @@ export default async function HomePage() {
   const instagramHandle = siteSettings?.instagramHandle ?? "@lizza.atelier";
 
   return (
-    <div className="space-y-20">
+    <>
+      {/* Hero - Full Width */}
       <Hero
         video={heroVideoUrl} 
         headline={homeData?.heroHeadline}
         subtext={homeData?.heroSubtext}
         ctas={ctas}
       />
-      <Section title="About the Atelier" className="flex justify-end text-end">
-        <p className="max-w-3xl text-xl leading-relaxed text-charcoal/70">{brandIntro}</p>
-      </Section>
-      <CtaBanner title="Discover Timeless Pieces" ctaLabel="Visit Shop" href="/shop" />
-      <Section>
-        <FeaturedGrid images={featuredVisuals} />
-      </Section>
-      <Section title="Our Process">
-        <ProcessSteps steps={processSteps} />
-      </Section>
-      <Section title="Testimonials">
-        <Testimonials items={testimonials} />
-      </Section>
-      <Section title="Why Choose Us">
-        <WhyChooseUs />
-      </Section>
-      {/* {homeData?.showInstagramEmbed !== false && (
-        <Section>
-          <InstagramFeed handle={instagramHandle} />
-        </Section>
-      )} */}
-      <CtaBanner title="Begin Your Journey" ctaLabel="Book a Consultation" href="/consultation" />
-    </div>
+      
+      {/* Rest of content - With Container */}
+      <Container>
+        <div className="space-y-20 py-16 lg:py-24">
+          <Section title="About the Atelier" className="flex justify-end text-end">
+            <p className="max-w-3xl text-xl leading-relaxed text-charcoal/70">{brandIntro}</p>
+          </Section>
+          <CtaBanner title="Discover Timeless Pieces" ctaLabel="Visit Shop" href="/shop" />
+          <Section>
+            <FeaturedGrid images={featuredVisuals} />
+          </Section>
+          <Section title="Our Process">
+            <ProcessSteps steps={processSteps} />
+          </Section>
+          <Section title="Testimonials">
+            <Testimonials items={testimonials} />
+          </Section>
+          <Section title="Why Choose Us">
+            <WhyChooseUs />
+          </Section>
+          <CtaBanner title="Begin Your Journey" ctaLabel="Book a Consultation" href="/consultation" />
+        </div>
+      </Container>
+    </>
   );
 }

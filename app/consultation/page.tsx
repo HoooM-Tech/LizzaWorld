@@ -7,6 +7,7 @@ import { ConsultationForm } from "@/components/consultation-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, Video, MapPin } from "lucide-react";
+import { Container } from "@/components/container";
 
 const categoryDetails = {
   Bridal: [
@@ -68,6 +69,7 @@ export default function ConsultationPage() {
   };
 
   return (
+    <Container className="py-16 lg:py-24">
     <div className="space-y-16">
       <header className="space-y-6">
         <h1 className="font-display text-4xl sm:text-5xl">Book a Consultation</h1>
@@ -177,5 +179,6 @@ export default function ConsultationPage() {
         </Section>
       )}
     </div>
+    </Container>
   );
 }

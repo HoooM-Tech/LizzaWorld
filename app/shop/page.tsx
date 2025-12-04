@@ -3,6 +3,7 @@ import { featuredCollectionQuery, productsByCollectionQuery } from "@/sanity/lib
 import { urlFor } from "@/sanity/lib/image";
 import { products as fallbackProducts } from "@/data/products";
 import ShopPageClient from "@/components/shop-page-client";
+import { Container } from "@/components/container";
 
 export default async function ShopPage() {
   const featuredCollection = await sanityClient.fetch(featuredCollectionQuery);
@@ -116,12 +117,14 @@ const similarProducts = featuredCollection?.similarProducts?.length
     "The Eminence Collection celebrates the elegance of power and purpose. Designed for women who lead with confidence and grace, each piece reflects refined craftsmanship, modern femininity, and timeless allure.";
 
   return (
-    <ShopPageClient
-      products={products}
-      editorialImages={editorialImages}
-      collectionTitle={collectionTitle}
-      introCopy={introCopy}
-      similarProducts={similarProducts}
-    />
+    <Container className="py-16 lg:py-24">
+      <ShopPageClient
+        products={products}
+        editorialImages={editorialImages}
+        collectionTitle={collectionTitle}
+        introCopy={introCopy}
+        similarProducts={similarProducts}
+        />
+    </Container>
   );
 }

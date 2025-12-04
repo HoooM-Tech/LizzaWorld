@@ -27,26 +27,26 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-charcoal/5 bg-ivory/90 backdrop-blur">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-charcoal/70 backdrop-blur-sm">
         <Container className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             {/* Desktop: Show text logo */}
-            <span className="hidden md:block font-display text-xl tracking-[0.4em] text-charcoal">
+            <span className="hidden md:block font-display text-xl tracking-[0.2em] text-[#ffff]">
               LIZZA ATELIER
             </span>
             {/* Mobile: Show image logo */}
             <img
               src="/logo.png"
               alt="Lizza Atelier"
-              className="md:hidden h-9 w-9 object-contain rounded-none"
+              className="md:hidden h-10 w-10 object-contain rounded-none color-[#ffff]"
             />
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden items-center gap-10 text-sm uppercase tracking-[0.2em] text-charcoal/80 lg:flex">
+          <nav className="hidden items-center gap-10 text-sm uppercase tracking-[0.15em] text-[#ffff] lg:flex">
             {links.map((link) => (
-              <Link key={link.href} href={link.href} className="transition hover:text-charcoal">
+              <Link key={link.href} href={link.href} className="transition hover:text-ivory">
                 {link.label}
               </Link>
             ))}
@@ -55,10 +55,21 @@ export function Navbar() {
           {/* Right Side Actions */}
           <div className="flex items-center gap-2">
             {/* Desktop & Mobile Icons */}
-            <Button variant="ghost" size="icon" aria-label="Search" onClick={() => setIsSearchOpen(true)}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              aria-label="Search" 
+              onClick={() => setIsSearchOpen(true)}
+              className="text-ivory hover:bg-ivory/10 hover:text-ivory"
+            >
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" asChild className="hidden md:flex">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              asChild 
+              className="hidden md:flex text-ivory hover:bg-ivory/10 hover:text-ivory"
+            >
               <Link href="https://www.instagram.com/lizza.atelier" aria-label="Visit Instagram">
                 <Instagram className="h-5 w-5" />
               </Link>
@@ -68,11 +79,11 @@ export function Navbar() {
               size="icon" 
               aria-label="View cart" 
               onClick={() => setIsCartOpen(true)}
-              className="relative"
+              className="relative text-ivory hover:bg-ivory/10 hover:text-ivory"
             >
               <ShoppingCart className="h-5 w-5" />
               {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-charcoal text-[10px] font-semibold text-ivory">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-ivory text-[10px] font-semibold text-charcoal">
                   {cartItemCount > 99 ? '99+' : cartItemCount}
                 </span>
               )}
@@ -82,7 +93,7 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden text-ivory hover:bg-ivory/10 hover:text-ivory"
               aria-label="Toggle menu"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
@@ -97,14 +108,14 @@ export function Navbar() {
 
         {/* Mobile Menu Dropdown */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-charcoal/5 bg-ivory">
+          <div className="lg:hidden border-t border-ivory/10 bg-charcoal/90 backdrop-blur">
             <Container className="py-6">
               <nav className="flex flex-col space-y-4">
                 {links.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm uppercase tracking-[0.2em] text-charcoal/80 transition hover:text-charcoal py-2"
+                    className="text-sm uppercase tracking-[0.2em] text-[#ffff] transition hover:text-ivory py-2"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.label}
@@ -113,7 +124,7 @@ export function Navbar() {
                 <Link
                   href="https://www.instagram.com/lizza.atelier"
                   target="_blank"
-                  className="text-sm uppercase tracking-[0.2em] text-charcoal/80 transition hover:text-charcoal py-2 flex items-center gap-2"
+                  className="text-sm uppercase tracking-[0.2em] text-[#ffff] transition hover:text-ivory py-2 flex items-center gap-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <Instagram className="h-5 w-5" />
@@ -129,4 +140,4 @@ export function Navbar() {
       <SearchDialog open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
-} 
+}

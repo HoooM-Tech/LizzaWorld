@@ -3,7 +3,6 @@ import { Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { Container } from "@/components/container";
 import { CartProvider } from "@/components/cart-context";
 
 const playfair = Playfair_Display({
@@ -45,10 +44,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-ivory text-charcoal antialiased">
         <CartProvider>
           <Navbar />
-          <main className="min-h-screen">
-            <Container>
-              <div className="space-y-20 py-16 lg:py-24">{children}</div>
-            </Container>
+          <main className="min-h-screen pt-20">
+            {children}
           </main>
           <Footer />
         </CartProvider>

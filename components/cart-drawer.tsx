@@ -84,8 +84,32 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
     setShowEmailModal(false);
 
     initiatePayment(paymentData, {
-      onSuccess: (reference) => {
+      onSuccess: async (reference) => {
         console.log("Payment successful:", reference);
+        
+        // Send order confirmation email
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'order',
+              data: {
+                email,
+                items: items.map(item => ({
+                  title: item.title,
+                  size: item.size,
+                  quantity: item.quantity,
+                  price: item.priceNaira,
+                })),
+                totalAmount: totalPrice,
+                reference,
+              },
+            }),
+          });
+        } catch (error) {
+          console.error('Failed to send email:', error);
+        }
         clearCart();
         onClose();
         alert("Payment successful! Your order has been received.");
