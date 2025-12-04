@@ -16,7 +16,7 @@ type Product = {
   description: string;
   priceNaira: number;
   sizes: string[];
-  image: string;
+  images: string[];
   orderLink?: string;
   isAvailable?: boolean;
 };
@@ -87,7 +87,7 @@ export default function ShopPageClient({
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-charcoal mb-6">
                     <Image
-                      src={product.image}
+                      src={product.images[0]}
                       alt={product.title}
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"

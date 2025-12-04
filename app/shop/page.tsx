@@ -16,16 +16,23 @@ export default async function ShopPage() {
   let products = [];
 
   if (productsData && productsData.length > 0) {
-    products = productsData.map((product: any) => ({
-      id: product._id, 
-      title: product?.title,
-      description: product?.description,
-      priceNaira: product?.priceNaira ?? 0,
-      sizes: product?.sizes ?? [],
-      image: product?.images?.length ? urlFor(product.images[0]).url() : "/images/lizzaa/img-17.png",
-      orderLink: product?.orderLink,
-      isAvailable: product?.isAvailable ?? true
-    }));
+    products = productsData.map((product: any) => {
+      // Map all images from the product, or use fallback
+      const images = product?.images?.length 
+        ? product.images.map((img: any) => urlFor(img).url())
+        : ["/images/lizzaa/img-17.png"];
+
+      return {
+        id: product._id, 
+        title: product?.title,
+        description: product?.description,
+        priceNaira: product?.priceNaira ?? 0,
+        sizes: product?.sizes ?? [],
+        images: images, // Now returns array of images
+        orderLink: product?.orderLink,
+        isAvailable: product?.isAvailable ?? true
+      };
+    });
   } else {
     products = fallbackProducts;
   }
@@ -37,17 +44,24 @@ export default async function ShopPage() {
   ];
 
   // Fetch similar products from Sanity or use regular products as fallback
-const similarProducts = featuredCollection?.similarProducts?.length
-    ? featuredCollection.similarProducts.map((product: any) => ({
-        id: product._id,
-        title: product?.title,
-        description: product?.description,
-        priceNaira: product?.priceNaira ?? 0,
-        sizes: product?.sizes ?? [],
-        image: product?.images?.length ? urlFor(product.images[0]).url() : "/images/lizzaa/img-17.png",
-        orderLink: product?.orderLink,
-        isAvailable: product?.isAvailable ?? true
-      }))
+  const similarProducts = featuredCollection?.similarProducts?.length
+    ? featuredCollection.similarProducts.map((product: any) => {
+        // Map all images for similar products too
+        const images = product?.images?.length 
+          ? product.images.map((img: any) => urlFor(img).url())
+          : ["/images/lizzaa/img-17.png"];
+
+        return {
+          id: product._id,
+          title: product?.title,
+          description: product?.description,
+          priceNaira: product?.priceNaira ?? 0,
+          sizes: product?.sizes ?? [],
+          images: images, // Now returns array of images
+          orderLink: product?.orderLink,
+          isAvailable: product?.isAvailable ?? true
+        };
+      })
     : [
         {
           id: "similar-1",
@@ -55,7 +69,10 @@ const similarProducts = featuredCollection?.similarProducts?.length
           description: "Flowing elegance in luxurious silk charmeuse",
           priceNaira: 185000,
           sizes: ["S", "M", "L"],
-          image: "/images/lizzaa/img-10.png",
+          images: [
+            "/images/lizzaa/img-10.png",
+            "/images/lizzaa/img-23.png",
+          ],
           orderLink: "https://www.instagram.com/lizza.atelier",
           isAvailable: true
         },
@@ -65,7 +82,11 @@ const similarProducts = featuredCollection?.similarProducts?.length
           description: "Sharp sophistication for the modern woman",
           priceNaira: 165000,
           sizes: ["XS", "S", "M", "L"],
-          image: "/images/lizzaa/img-11.png",
+          images: [
+            "/images/lizzaa/img-11.png",
+            "/images/lizzaa/img-12.png",
+            "/images/lizzaa/img-6.png"
+          ],
           orderLink: "https://www.instagram.com/lizza.atelier",
           isAvailable: true
         },
@@ -75,7 +96,11 @@ const similarProducts = featuredCollection?.similarProducts?.length
           description: "Effortless grace with contemporary draping",
           priceNaira: 145000,
           sizes: ["S", "M", "L", "XL"],
-          image: "/images/lizzaa/img-12.png",
+          images: [
+            "/images/lizzaa/img-12.png",
+            "/images/lizzaa/img-12-alt.png",
+            "/images/lizzaa/img-12-detail.png"
+          ],
           orderLink: "https://www.instagram.com/lizza.atelier",
           isAvailable: true
         },
@@ -85,7 +110,10 @@ const similarProducts = featuredCollection?.similarProducts?.length
           description: "Timeless outerwear crafted for impact",
           priceNaira: 220000,
           sizes: ["S", "M", "L"],
-          image: "/images/lizzaa/img-13.png",
+          images: [
+            "/images/lizzaa/img-20.png",
+            "/images/lizzaa/img-28.png",
+          ],
           orderLink: "https://www.instagram.com/lizza.atelier",
           isAvailable: true
         },
@@ -95,7 +123,10 @@ const similarProducts = featuredCollection?.similarProducts?.length
           description: "Bold lines meet feminine fluidity",
           priceNaira: 98000,
           sizes: ["XS", "S", "M", "L", "XL"],
-          image: "/images/lizzaa/img-14.png",
+          images: [
+            "/images/lizzaa/img-2.png",
+            "/images/lizzaa/img-16.png",
+          ],
           orderLink: "https://www.instagram.com/lizza.atelier",
           isAvailable: true
         },
@@ -105,7 +136,10 @@ const similarProducts = featuredCollection?.similarProducts?.length
           description: "Classic silhouette with modern proportions",
           priceNaira: 125000,
           sizes: ["S", "M", "L", "XL"],
-          image: "/images/lizzaa/img-15.png",
+          images: [
+            "/images/lizzaa/img-26.png",
+            "/images/lizzaa/img-27.png",
+          ],
           orderLink: "https://www.instagram.com/lizza.atelier",
           isAvailable: true
         }
@@ -124,7 +158,7 @@ const similarProducts = featuredCollection?.similarProducts?.length
         collectionTitle={collectionTitle}
         introCopy={introCopy}
         similarProducts={similarProducts}
-        />
+      />
     </Container>
   );
 }

@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCart } from "@/components/cart-context";
+import { cn } from "@/lib/utils";
 
 export type Product = {
   id: string;
@@ -13,7 +15,7 @@ export type Product = {
   description: string;
   priceNaira: number;
   sizes: string[];
-  image: string;
+  images: string[];
   orderLink?: string;
   isAvailable?: boolean;
 };
@@ -26,7 +28,13 @@ const formatter = new Intl.NumberFormat("en-NG", {
 
 export function ProductCard({ product }: { product: Product }): JSX.Element {
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { addItem } = useCart();
+
+  // Ensure we have at least one image
+  const images = product.images && product.images.length > 0 
+    ? product.images 
+    : ["/placeholder.jpg"];
 
   const handleAddToCart = (): void => {
     if (!selectedSize) {
@@ -40,25 +48,93 @@ export function ProductCard({ product }: { product: Product }): JSX.Element {
       description: product.description,
       priceNaira: product.priceNaira,
       size: selectedSize,
-      image: product.image,
+      image: images[0], 
     });
 
     // Reset size selection after adding
     setSelectedSize("");
   };
 
+  const goToPrevious = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCurrentImageIndex((prev) => 
+      prev === 0 ? images.length - 1 : prev - 1
+    );
+  };
+
+  const goToNext = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCurrentImageIndex((prev) => 
+      prev === images.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const goToImage = (index: number) => {
+    setCurrentImageIndex(index);
+  };
+
   return (
     <article className="flex flex-col overflow-hidden border border-charcoal/10 bg-white/80">
-      <div className="relative aspect-[4/5] overflow-hidden">
+      {/* Image Gallery */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-charcoal/5 group">
+        {/* Main Image */}
         <Image
-          src={product.image}
-          alt={product.title}
+          src={images[currentImageIndex]}
+          alt={`${product.title} - Image ${currentImageIndex + 1}`}
           fill
           sizes="(min-width: 1024px) 33vw, (min-width: 768px) 45vw, 100vw"
           unoptimized
           className="object-cover transition duration-700 hover:scale-105 rounded-none"
         />
+
+        {/* Navigation Arrows - Only show if multiple images */}
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={goToPrevious}
+              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-ivory/90 p-2 opacity-0 transition-opacity hover:bg-ivory group-hover:opacity-100"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="h-5 w-5 text-charcoal" />
+            </button>
+            <button
+              onClick={goToNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-ivory/90 p-2 opacity-0 transition-opacity hover:bg-ivory group-hover:opacity-100"
+              aria-label="Next image"
+            >
+              <ChevronRight className="h-5 w-5 text-charcoal" />
+            </button>
+          </>
+        )}
+
+        {/* Dot Indicators - Only show if multiple images */}
+        {images.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToImage(index)}
+                className={cn(
+                  "h-2 w-2 rounded-full transition-all",
+                  currentImageIndex === index
+                    ? "bg-ivory w-6"
+                    : "bg-ivory/50 hover:bg-ivory/75"
+                )}
+                aria-label={`Go to image ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Image Counter */}
+        {images.length > 1 && (
+          <div className="absolute top-4 right-4 rounded-full bg-charcoal/70 px-3 py-1 text-xs text-ivory backdrop-blur-sm">
+            {currentImageIndex + 1} / {images.length}
+          </div>
+        )}
       </div>
+
+      {/* Product Info */}
       <div className="flex flex-1 flex-col gap-4 p-6">
         <div>
           <h3 className="font-display text-2xl text-charcoal">{product.title}</h3>

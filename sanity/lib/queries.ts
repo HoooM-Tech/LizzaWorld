@@ -26,7 +26,14 @@ export const featuredCollectionQuery = `
 
 export const productsByCollectionQuery = (slug:string)=>`
 *[_type=="product" && collection->slug.current=="${slug}"] | order(_createdAt desc){
-  title, slug, priceNaira, description, sizes, images, isAvailable, orderLink
+  title, slug, priceNaira, description, sizes, 
+  images[]{
+      asset->{
+        _id,
+        url
+      }
+  }, 
+  isAvailable, orderLink
 }`;
 
 export const bespokePageQuery = `
