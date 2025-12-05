@@ -94,7 +94,7 @@ export async function sendOrderConfirmation(data: {
     .join('');
 
   const mailOptions = {
-    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ORDER_ADDRESS}>`,
+    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
     to: data.email,
     subject: 'Order Confirmation - Lizzaworld Atelier',
     html: `

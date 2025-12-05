@@ -87,81 +87,90 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
     }
   };
 
-  const handleCheckout = () => {
-    if (!validateForm()) {
-      alert("Please fill in all required fields correctly");
-      return;
+const handleCheckout = () => {
+  if (!validateForm()) {
+    alert("Please fill in all required fields correctly");
+    return;
+  }
+
+  if (items.length === 0) {
+    alert("Your cart is empty");
+    return;
+  }
+
+  const paymentData = {
+    email: formData.email,
+    amount: totalPrice * 100,
+    reference: `ORDER-${Date.now()}`,
+    metadata: {
+      fullName: formData.fullName,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      postalCode: formData.postalCode,
+      deliveryNotes: formData.deliveryNotes,
+      items: items.map(item => ({
+        id: item.id,
+        title: item.title,
+        size: item.size,
+        quantity: item.quantity,
+        price: item.priceNaira
+      })),
+      totalItems,
+      order_type: "ready_to_wear"
     }
-
-    if (items.length === 0) {
-      alert("Your cart is empty");
-      return;
-    }
-
-    const paymentData = {
-      email: formData.email,
-      amount: totalPrice * 100,
-      reference: `ORDER-${Date.now()}`,
-      metadata: {
-        fullName: formData.fullName,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        postalCode: formData.postalCode,
-        deliveryNotes: formData.deliveryNotes,
-        items: items.map(item => ({
-          id: item.id,
-          title: item.title,
-          size: item.size,
-          quantity: item.quantity,
-          price: item.priceNaira
-        })),
-        totalItems,
-        order_type: "ready_to_wear"
-      }
-    };
-
-    initiatePayment(paymentData, {
-      onSuccess: async (reference) => {
-        console.log("Payment successful:", reference);
-        
-        // Send order confirmation email
-        try {
-          await fetch('/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              type: 'order',
-              data: {
-                email: formData.email,
-                fullName: formData.fullName,
-                phone: formData.phone,
-                address: `${formData.address}, ${formData.city}, ${formData.state}`,
-                items: items.map(item => ({
-                  title: item.title,
-                  size: item.size,
-                  quantity: item.quantity,
-                  price: item.priceNaira,
-                })),
-                totalAmount: totalPrice,
-                reference,
-              },
-            }),
-          });
-        } catch (error) {
-          console.error('Failed to send email:', error);
-        }
-        
-        clearCart();
-        setOrderComplete(true);
-      },
-      onClose: () => {
-        console.log("Payment popup closed");
-      }
-    });
   };
 
+  initiatePayment(paymentData, {
+    onSuccess: async (reference) => {
+      console.log("Payment successful:", reference);
+      
+      // Send order confirmation email
+      try {
+        const response = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'order',
+            data: {
+              email: formData.email,
+              fullName: formData.fullName,
+              phone: formData.phone,
+              address: `${formData.address}, ${formData.city}, ${formData.state}`,
+              items: items.map(item => ({
+                title: item.title,
+                size: item.size,
+                quantity: item.quantity,
+                price: item.priceNaira,
+              })),
+              totalAmount: totalPrice,
+              reference,
+            },
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Email API error:', errorData);
+          // Still proceed with order completion even if email fails
+          alert('Order confirmed! However, there was an issue sending the confirmation email. We will contact you soon.');
+        }
+      } catch (error) {
+        console.error('Failed to send email:', error);
+        // Still proceed with order completion even if email fails
+        alert('Order confirmed! However, there was an issue sending the confirmation email. We will contact you soon.');
+      } finally {
+        // Always clear cart and show success, regardless of email status
+        clearCart();
+        setOrderComplete(true);
+      }
+    },
+    onClose: () => {
+      console.log("Payment popup closed");
+    }
+  });
+};
   if (orderComplete) {
     return (
       <div className="min-h-screen bg-ivory p-4 sm:p-8">

@@ -12,7 +12,7 @@ interface PaystackConfig {
 }
 
 interface PaystackCallbacks {
-  onSuccess?: (reference: string) => void;
+  onSuccess?: (reference: string) => void | Promise<void>;
   onClose?: () => void;
 }
 
@@ -76,13 +76,28 @@ export function usePaystackPayment() {
       currency: config.currency || "NGN",
       channels: config.channels || ["card", "bank", "ussd", "mobile_money"],
       metadata: config.metadata || {},
-      onSuccess: (transaction: any) => {
-        setIsLoading(false);
+      onSuccess: async (transaction: any) => {
         console.log("Payment successful:", transaction);
-        callbacks?.onSuccess?.(transaction.reference);
+        
+        try {
+          // Keep loading state while processing
+          // Call the success callback and wait for it to complete
+          if (callbacks?.onSuccess) {
+            await callbacks.onSuccess(transaction.reference);
+          }
+        } catch (error) {
+          console.error("Error in onSuccess callback:", error);
+        } finally {
+          // Only clear loading after everything is done
+          setIsLoading(false);
+        }
       },
       onClose: () => {
-        setIsLoading(false);
+        // Only set loading to false if payment wasn't successful
+        // (if successful, the onSuccess handler will handle it)
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
         console.log("Payment popup closed");
         callbacks?.onClose?.();
       },
