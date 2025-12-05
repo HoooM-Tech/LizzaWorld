@@ -52,7 +52,7 @@ export function Hero({ image, video, headline, subtext, ctas }: HeroProps) {
           alt="Hero background"
           fill
           priority
-          className="object-cover object-center opacity-60"
+          className="object-cover object-center opacity-60 rounded-none"
         />
       )}
       

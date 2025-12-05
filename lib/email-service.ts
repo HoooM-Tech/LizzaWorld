@@ -73,6 +73,9 @@ export async function sendConsultationConfirmation(data: {
 
 export async function sendOrderConfirmation(data: {
   email: string;
+  fullName: string; 
+  phone: string;  
+  address: string; 
   items: Array<{ title: string; size: string; quantity: number; price: number }>;
   totalAmount: number;
   reference: string;
@@ -91,9 +94,9 @@ export async function sendOrderConfirmation(data: {
     .join('');
 
   const mailOptions = {
-    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
+    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ORDER_ADDRESS}>`,
     to: data.email,
-    subject: 'Order Confirmation',
+    subject: 'Order Confirmation - Lizzaworld Atelier',
     html: `
       <!DOCTYPE html>
       <html>
@@ -106,6 +109,7 @@ export async function sendOrderConfirmation(data: {
             table { width: 100%; border-collapse: collapse; margin: 20px 0; }
             th { background: #f4f4f4; padding: 10px; text-align: left; }
             .total { font-size: 18px; font-weight: bold; margin-top: 20px; }
+            .details { background: #f9f9f9; padding: 15px; margin: 20px 0; }
             .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
           </style>
         </head>
@@ -115,8 +119,15 @@ export async function sendOrderConfirmation(data: {
               <h1>Order Confirmed!</h1>
             </div>
             <div class="content">
-              <p>Thank you for your purchase!</p>
-              <p>Your payment has been received and your order is being processed.</p>
+              <p>Dear ${data.fullName},</p>
+              <p>Thank you for your purchase! Your payment has been received and your order is being processed.</p>
+              
+              <div class="details">
+                <h3>Delivery Information:</h3>
+                <p><strong>Name:</strong> ${data.fullName}</p>
+                <p><strong>Phone:</strong> ${data.phone}</p>
+                <p><strong>Address:</strong> ${data.address}</p>
+              </div>
               
               <h3>Order Details:</h3>
               <table>
@@ -136,7 +147,8 @@ export async function sendOrderConfirmation(data: {
               <p class="total">Total: ₦${data.totalAmount.toLocaleString()}</p>
               <p><strong>Reference:</strong> ${data.reference}</p>
               
-              <p>We will contact you shortly regarding delivery arrangements.</p>
+              <p>We will contact you within 24-48 hours to arrange delivery.</p>
+              <p>If you have any questions, please don't hesitate to reach out.</p>
             </div>
             <div class="footer">
               <p>&copy; ${new Date().getFullYear()} ${process.env.EMAIL_FROM_NAME}. All rights reserved.</p>

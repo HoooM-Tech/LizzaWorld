@@ -77,12 +77,13 @@ export default async function BespokePage() {
         <Section>
           <ProcessSteps steps={processSteps} />
         </Section>
-  {/* 
+      {/* 
         {galleryImages && galleryImages.length > 0 && (
           <Section title="Gallery">
             <Gallery images={galleryImages} />
           </Section>
-        )} */}
+        )} 
+      */}
 
         {testimonialContent && (
           <Section>
