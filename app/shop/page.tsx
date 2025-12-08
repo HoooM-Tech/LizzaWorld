@@ -73,7 +73,7 @@ export default async function ShopPage() {
             "/images/lizzaa/img-10.png",
             "/images/lizzaa/img-23.png",
           ],
-          orderLink: "https://www.instagram.com/lizza.atelier",
+          orderLink: "https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA==",
           isAvailable: true
         },
         {
@@ -87,7 +87,7 @@ export default async function ShopPage() {
             "/images/lizzaa/img-12.png",
             "/images/lizzaa/img-6.png"
           ],
-          orderLink: "https://www.instagram.com/lizza.atelier",
+          orderLink: "https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA==",
           isAvailable: true
         },
         {
@@ -101,7 +101,7 @@ export default async function ShopPage() {
             "/images/lizzaa/img-12-alt.png",
             "/images/lizzaa/img-12-detail.png"
           ],
-          orderLink: "https://www.instagram.com/lizza.atelier",
+          orderLink: "https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA==",
           isAvailable: true
         },
         {
@@ -114,7 +114,7 @@ export default async function ShopPage() {
             "/images/lizzaa/img-20.png",
             "/images/lizzaa/img-28.png",
           ],
-          orderLink: "https://www.instagram.com/lizza.atelier",
+          orderLink: "https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA==",
           isAvailable: true
         },
         {
@@ -127,7 +127,7 @@ export default async function ShopPage() {
             "/images/lizzaa/img-2.png",
             "/images/lizzaa/img-16.png",
           ],
-          orderLink: "https://www.instagram.com/lizza.atelier",
+          orderLink: "https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA==",
           isAvailable: true
         },
         {
@@ -140,7 +140,7 @@ export default async function ShopPage() {
             "/images/lizzaa/img-26.png",
             "/images/lizzaa/img-27.png",
           ],
-          orderLink: "https://www.instagram.com/lizza.atelier",
+          orderLink: "https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA==",
           isAvailable: true
         }
       ];

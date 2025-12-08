@@ -1,9 +1,10 @@
+// lib/email-service.ts
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
   host: process.env.ZOHO_SMTP_HOST,
   port: parseInt(process.env.ZOHO_SMTP_PORT || '465'),
-  secure: true, // true for 465, false for 587
+  secure: true,
   auth: {
     user: process.env.ZOHO_EMAIL,
     pass: process.env.ZOHO_PASSWORD,
@@ -78,6 +79,9 @@ export async function sendOrderConfirmation(data: {
   address: string; 
   items: Array<{ title: string; size: string; quantity: number; price: number }>;
   totalAmount: number;
+  deliveryOption?: string;
+  deliveryFee?: number;
+  finalTotal?: number;
   reference: string;
 }) {
   const itemsList = data.items
@@ -92,6 +96,12 @@ export async function sendOrderConfirmation(data: {
     `
     )
     .join('');
+
+  const deliveryText = data.deliveryOption === 'within-lagos' 
+    ? 'Within Lagos' 
+    : data.deliveryOption === 'outside-lagos'
+      ? 'Outside Lagos'
+      : 'Standard Delivery';
 
   const mailOptions = {
     from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
@@ -127,6 +137,7 @@ export async function sendOrderConfirmation(data: {
                 <p><strong>Name:</strong> ${data.fullName}</p>
                 <p><strong>Phone:</strong> ${data.phone}</p>
                 <p><strong>Address:</strong> ${data.address}</p>
+                <p><strong>Delivery Option:</strong> ${deliveryText}</p>
               </div>
               
               <h3>Order Details:</h3>
@@ -144,7 +155,23 @@ export async function sendOrderConfirmation(data: {
                 </tbody>
               </table>
               
-              <p class="total">Total: ₦${data.totalAmount.toLocaleString()}</p>
+              <div style="border-top: 2px solid #ddd; padding-top: 15px;">
+                <p style="display: flex; justify-content: space-between; margin: 5px 0;">
+                  <span>Subtotal:</span>
+                  <span>₦${data.totalAmount.toLocaleString()}</span>
+                </p>
+                ${data.deliveryFee ? `
+                  <p style="display: flex; justify-content: space-between; margin: 5px 0;">
+                    <span>Delivery Fee:</span>
+                    <span>₦${data.deliveryFee.toLocaleString()}</span>
+                  </p>
+                ` : ''}
+                <p class="total" style="display: flex; justify-content: space-between; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                  <span>Total Paid:</span>
+                  <span>₦${(data.finalTotal || data.totalAmount).toLocaleString()}</span>
+                </p>
+              </div>
+              
               <p><strong>Reference:</strong> ${data.reference}</p>
               
               <p>We will contact you within 24-48 hours to arrange delivery.</p>
@@ -160,6 +187,96 @@ export async function sendOrderConfirmation(data: {
   };
 
   await transporter.sendMail(mailOptions);
+}
+
+export async function sendInternationalShippingInquiry(data: {
+  fullName: string;
+  email: string;
+  phone: string;
+  country: string;
+  address?: string;
+  items: Array<{ title: string; size: string; quantity: number; price: number }>;
+  totalAmount: number;
+}) {
+  const itemsList = data.items
+    .map(item => `${item.title} (Size ${item.size}) × ${item.quantity} - ₦${item.price.toLocaleString()}`)
+    .join('\n');
+
+  // Send to customer
+  await transporter.sendMail({
+    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
+    to: data.email,
+    subject: 'International Shipping Request Received',
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #f4f4f4; padding: 20px; text-align: center; }
+            .content { padding: 20px; background: #fff; }
+            .details { background: #f9f9f9; padding: 15px; margin: 20px 0; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Shipping Request Received</h1>
+            </div>
+            <div class="content">
+              <p>Dear ${data.fullName},</p>
+              <p>Thank you for your interest in our products! We've received your international shipping request.</p>
+              
+              <div class="details">
+                <h3>Your Request:</h3>
+                <p><strong>Destination:</strong> ${data.country}</p>
+                ${data.address ? `<p><strong>Address:</strong> ${data.address}</p>` : ''}
+                <p><strong>Order Value:</strong> ₦${data.totalAmount.toLocaleString()}</p>
+              </div>
+              
+              <p>Our team will calculate the DHL shipping costs for your location and contact you within 24 hours with:</p>
+              <ul>
+                <li>Exact shipping costs</li>
+                <li>Estimated delivery time</li>
+                <li>Payment instructions</li>
+              </ul>
+              
+              <p>If you have any immediate questions, please don't hesitate to reach out.</p>
+            </div>
+            <div class="footer">
+              <p>&copy; ${new Date().getFullYear()} ${process.env.EMAIL_FROM_NAME}. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  });
+
+  // Send to admin
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.ZOHO_EMAIL;
+  await transporter.sendMail({
+    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
+    to: adminEmail,
+    subject: `New International Shipping Request - ${data.country}`,
+    html: `
+      <h2>New International Shipping Request</h2>
+      <h3>Customer Details:</h3>
+      <p><strong>Name:</strong> ${data.fullName}</p>
+      <p><strong>Email:</strong> ${data.email}</p>
+      <p><strong>Phone:</strong> ${data.phone}</p>
+      <p><strong>Country:</strong> ${data.country}</p>
+      ${data.address ? `<p><strong>Address:</strong> ${data.address}</p>` : ''}
+      
+      <h3>Order Items:</h3>
+      <pre>${itemsList}</pre>
+      
+      <p><strong>Order Value:</strong> ₦${data.totalAmount.toLocaleString()}</p>
+      
+      <p><em>Action Required: Calculate DHL shipping costs and contact customer within 24 hours.</em></p>
+    `,
+  });
 }
 
 // Send notification to admin

@@ -30,19 +30,26 @@ export function usePaystackPayment() {
   const [isLoading, setIsLoading] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
-  // Load Paystack script
   useEffect(() => {
     if (typeof window !== "undefined" && !window.PaystackPop) {
       const script = document.createElement("script");
       script.src = "https://js.paystack.co/v1/inline.js";
       script.async = true;
-      script.onload = () => setScriptLoaded(true);
+      script.onload = () => {
+        console.log("✅ Paystack script loaded");
+        setScriptLoaded(true);
+      };
+      script.onerror = () => {
+        console.error("❌ Failed to load Paystack script");
+      };
       document.body.appendChild(script);
 
       return () => {
-        document.body.removeChild(script);
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
       };
-    } else {
+    } else if (window.PaystackPop) {
       setScriptLoaded(true);
     }
   }, []);
@@ -51,22 +58,28 @@ export function usePaystackPayment() {
     config: PaystackConfig,
     callbacks?: PaystackCallbacks
   ) => {
+    console.log("🔵 initiatePayment called");
+    console.log("🔵 Script loaded:", scriptLoaded);
+    console.log("🔵 Window.PaystackPop:", !!window.PaystackPop);
+
     if (!scriptLoaded || !window.PaystackPop) {
       alert("Payment system is still loading. Please try again.");
       return;
     }
 
     setIsLoading(true);
+    console.log("🔵 isLoading set to true");
 
-    // Get public key from environment variable
     const publicKey = config.publicKey || process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
 
     if (!publicKey) {
-      console.error("Paystack public key is missing");
+      console.error("❌ Paystack public key is missing");
       alert("Payment configuration error. Please contact support.");
       setIsLoading(false);
       return;
     }
+
+    console.log("🔵 Public key found:", publicKey.substring(0, 10) + "...");
 
     const paystackConfig = {
       key: publicKey,
@@ -76,35 +89,43 @@ export function usePaystackPayment() {
       currency: config.currency || "NGN",
       channels: config.channels || ["card", "bank", "ussd", "mobile_money"],
       metadata: config.metadata || {},
-      onSuccess: async (transaction: any) => {
-        console.log("Payment successful:", transaction);
+      
+      // PRIMARY: Use 'callback' (Paystack's correct property name)
+      callback: function(response: any) {
+        console.log("✅✅✅ Paystack callback triggered!");
+        console.log("✅ Response:", response);
         
-        try {
-          // Keep loading state while processing
-          // Call the success callback and wait for it to complete
-          if (callbacks?.onSuccess) {
-            await callbacks.onSuccess(transaction.reference);
-          }
-        } catch (error) {
-          console.error("Error in onSuccess callback:", error);
-        } finally {
-          // Only clear loading after everything is done
-          setIsLoading(false);
+        setIsLoading(false);
+        console.log("✅ isLoading set to false");
+        
+        if (callbacks?.onSuccess) {
+          console.log("✅ Calling onSuccess callback with reference:", response.reference);
+          callbacks.onSuccess(response.reference);
         }
       },
-      onClose: () => {
-        // Only set loading to false if payment wasn't successful
-        // (if successful, the onSuccess handler will handle it)
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 500);
-        console.log("Payment popup closed");
-        callbacks?.onClose?.();
+      
+      onClose: function() {
+        console.log("⚠️ Paystack popup closed");
+        setIsLoading(false);
+        console.log("⚠️ isLoading set to false");
+        
+        if (callbacks?.onClose) {
+          callbacks.onClose();
+        }
       },
     };
 
-    const handler = window.PaystackPop.setup(paystackConfig);
-    handler.openIframe();
+    console.log("🔵 Paystack config created");
+    console.log("🔵 Opening Paystack iframe...");
+    
+    try {
+      const handler = window.PaystackPop.setup(paystackConfig);
+      handler.openIframe();
+    } catch (error) {
+      console.error("❌ Error opening Paystack:", error);
+      setIsLoading(false);
+      alert("Failed to open payment window. Please try again.");
+    }
   };
 
   return {

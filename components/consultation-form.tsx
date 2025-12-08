@@ -26,7 +26,6 @@ const initialState: FormState = {
   notes: ""
 };
 
-// Restructure the data into a grouped object
 const groupedCategories = {
   Bridal: [
     "White Wedding",
@@ -53,6 +52,47 @@ interface ConsultationFormProps {
   selectedOption: string | null;
 }
 
+// Helper function to verify payment
+const verifyPaymentWithBackend = async (reference: string) => {
+  console.log("🔍 Verifying consultation payment:", reference);
+  
+  try {
+    const response = await fetch('/api/verify-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ reference }),
+    });
+
+    const data = await response.json();
+    console.log("🔍 Consultation verification response:", data);
+
+    return data.status === true && data.data?.status === 'success';
+  } catch (error) {
+    console.error("❌ Consultation verification error:", error);
+    return false;
+  }
+};
+
+// Helper function to send confirmation email
+const sendConfirmationEmail = async (emailData: any) => {
+  try {
+    console.log("📧 Sending consultation confirmation email...");
+    await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'consultation',
+        data: emailData,
+      }),
+    });
+    console.log("📧 Consultation email sent successfully");
+  } catch (error) {
+    console.error('❌ Failed to send consultation email:', error);
+  }
+};
+
 export function ConsultationForm({ selectedOption }: ConsultationFormProps) {
   if (!selectedOption) {
     return null;
@@ -60,10 +100,12 @@ export function ConsultationForm({ selectedOption }: ConsultationFormProps) {
 
   const [formState, setFormState] = useState<FormState>(initialState);
   const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentReference, setPaymentReference] = useState("");
   const { initiatePayment, isLoading } = usePaystackPayment();
 
   const handleSubmit = async () => {
+    console.log("🔵 Consultation form submit clicked");
+
     // Validate required fields
     if (!formState.fullName || !formState.email || !formState.phone || 
         !formState.preferredDate || !formState.preferredTime || !formState.category) {
@@ -71,10 +113,11 @@ export function ConsultationForm({ selectedOption }: ConsultationFormProps) {
       return;
     }
 
-    setIsSubmitting(true);
-
     const consultationType = selectedOption === "online" ? "Online Consultation" : "On-Site Consultation";
     const consultationPrice = consultationPrices[selectedOption] || 0;
+
+    const reference = `CONSULT-${Date.now()}`;
+    console.log("🔵 Generated consultation reference:", reference);
 
     const consultationData = {
       ...formState,
@@ -83,13 +126,13 @@ export function ConsultationForm({ selectedOption }: ConsultationFormProps) {
       submittedAt: new Date().toISOString()
     };
 
-    console.log("Consultation form submitted", consultationData);
+    console.log("🔵 Consultation data:", consultationData);
     
-    // Initiate Paystack payment
+    // Prepare payment data
     const paymentData = {
       email: formState.email,
       amount: consultationPrice * 100, // Convert to kobo
-      reference: `CONSULT-${Date.now()}`,
+      reference,
       metadata: {
         fullName: formState.fullName,
         phone: formState.phone,
@@ -102,42 +145,89 @@ export function ConsultationForm({ selectedOption }: ConsultationFormProps) {
       }
     };
 
+    console.log("🔵 Initiating consultation payment:", paymentData);
+
+    let callbackFired = false;
+
     initiatePayment(paymentData, {
-      onSuccess: async (reference) => {
-        console.log("Payment successful:", reference);
+      onSuccess: async (ref) => {
+        console.log("✅ Consultation payment callback triggered!");
+        console.log("✅ Reference received:", ref);
         
-        // Send confirmation email
+        callbackFired = true;
+        
         try {
-          await fetch('/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              type: 'consultation',
-              data: {
-                email: formState.email,
-                fullName: formState.fullName,
-                consultationType,
-                preferredDate: formState.preferredDate,
-                preferredTime: formState.preferredTime,
-                category: formState.category,
-                reference,
-                amount: consultationPrice,
-              },
-            }),
-          });
+          // Verify payment with backend
+          console.log("✅ Verifying consultation payment...");
+          const isVerified = await verifyPaymentWithBackend(ref);
+          
+          if (isVerified) {
+            console.log("✅ Consultation payment verified!");
+            
+            // Send confirmation email
+            await sendConfirmationEmail({
+              email: formState.email,
+              fullName: formState.fullName,
+              consultationType,
+              preferredDate: formState.preferredDate,
+              preferredTime: formState.preferredTime,
+              category: formState.category,
+              reference: ref,
+              amount: consultationPrice,
+            });
+            
+            // Update state
+            setPaymentReference(ref);
+            setSubmitted(true);
+            setFormState(initialState);
+            
+            console.log("✅ Consultation success flow completed!");
+          } else {
+            console.error("❌ Consultation payment verification failed");
+            alert("Payment verification failed. Please contact support with reference: " + ref);
+          }
         } catch (error) {
-          console.error('Failed to send email:', error);
+          console.error("❌ Error in consultation success handler:", error);
+          alert("An error occurred. Please contact support with reference: " + ref);
         }
-        
-        // Clear form and show success
-        setFormState(initialState);
-        setSubmitted(true);
-        setIsSubmitting(false);
       },
-      onClose: () => {
-        console.log("Payment popup closed");
-        // Reset submitting state when popup is closed (whether successful or cancelled)
-        setIsSubmitting(false);
+      
+      onClose: async () => {
+        console.log("⚠️ Consultation payment popup closed");
+        
+        // If callback didn't fire, verify manually after a short delay
+        if (!callbackFired) {
+          console.log("⚠️ Callback did not fire, attempting manual verification...");
+          
+          // Wait 2 seconds for payment to process
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          console.log("🔍 Checking consultation payment status for reference:", reference);
+          const isVerified = await verifyPaymentWithBackend(reference);
+          
+          if (isVerified) {
+            console.log("✅ Consultation payment verified via fallback!");
+            
+            // Send confirmation email
+            await sendConfirmationEmail({
+              email: formState.email,
+              fullName: formState.fullName,
+              consultationType,
+              preferredDate: formState.preferredDate,
+              preferredTime: formState.preferredTime,
+              category: formState.category,
+              reference,
+              amount: consultationPrice,
+            });
+            
+            // Update state
+            setPaymentReference(reference);
+            setSubmitted(true);
+            setFormState(initialState);
+          } else {
+            console.log("⚠️ Consultation payment not verified - user may have cancelled");
+          }
+        }
       }
     });
   };
@@ -145,16 +235,27 @@ export function ConsultationForm({ selectedOption }: ConsultationFormProps) {
   if (submitted) {
     return (
       <div className="bg-champagne/10 border border-champagne/30 p-8 rounded-sm text-center space-y-4">
+        <div className="w-16 h-16 bg-champagne/10 rounded-full flex items-center justify-center mx-auto">
+          <svg className="w-8 h-8 text-champagne" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
         <h3 className="font-display text-2xl text-charcoal">
           Payment Successful!
         </h3>
         <p className="text-charcoal/70">
           Your consultation has been confirmed. We've sent a confirmation email with all the details. We will contact you within two business days to finalize arrangements.
         </p>
+        {paymentReference && (
+          <p className="text-sm text-charcoal/60 mt-2">
+            Reference: {paymentReference}
+          </p>
+        )}
         <Button
           onClick={() => {
             setSubmitted(false);
             setFormState(initialState);
+            setPaymentReference("");
           }}
           variant="outline"
         >
@@ -207,6 +308,7 @@ export function ConsultationForm({ selectedOption }: ConsultationFormProps) {
           onChange={(event) => setFormState((prev) => ({ ...prev, preferredTime: event.target.value }))}
         />
         <select
+          title="select value"
           required
           name="category"
           value={formState.category}
@@ -237,8 +339,8 @@ export function ConsultationForm({ selectedOption }: ConsultationFormProps) {
         onChange={(event) => setFormState((prev) => ({ ...prev, notes: event.target.value }))}
       />
       <div className="flex items-center gap-4">
-        <Button onClick={handleSubmit} disabled={isSubmitting || isLoading}>
-          {isSubmitting || isLoading ? "Processing..." : "Submit & Pay Now"}
+        <Button onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? "Processing..." : "Submit & Pay Now"}
         </Button>
       </div>
       <p className="text-xs text-charcoal/60">

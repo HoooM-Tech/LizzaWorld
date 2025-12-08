@@ -122,7 +122,7 @@ export function Navbar() {
                   </Link>
                 ))}
                 <Link
-                  href="https://www.instagram.com/lizza.atelier"
+                  href="https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA=="
                   target="_blank"
                   className="text-sm uppercase tracking-[0.2em] text-[#ffff] transition hover:text-ivory py-2 flex items-center gap-2"
                   onClick={() => setIsMobileMenuOpen(false)}

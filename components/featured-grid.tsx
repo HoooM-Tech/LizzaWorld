@@ -20,7 +20,7 @@ const imageConfig = [
   { width: 450, height: 600, aspect: "aspect-[3/4]" }
 ];
 
-const INSTAGRAM_URL = "https://www.instagram.com/lizza.atelier";
+const INSTAGRAM_URL = "https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA==";
 
 export function FeaturedGrid({ images }: FeaturedGridProps) {
   const fallbackImages = captions.map((_, index) => `/images/lizzaa/img-${index + 4}.png`);

@@ -1,5 +1,11 @@
+// app/api/send-email/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { sendConsultationConfirmation, sendOrderConfirmation, sendAdminNotification } from '@/lib/email-service';
+import { 
+  sendConsultationConfirmation, 
+  sendOrderConfirmation, 
+  sendAdminNotification,
+  sendInternationalShippingInquiry 
+} from '@/lib/email-service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,6 +20,8 @@ export async function POST(request: NextRequest) {
     } else if (type === 'order') {
       await sendOrderConfirmation(data);
       await sendAdminNotification('order', data);
+    } else if (type === 'international_inquiry') {
+      await sendInternationalShippingInquiry(data);
     } else {
       return NextResponse.json({ error: 'Invalid email type' }, { status: 400 });
     }

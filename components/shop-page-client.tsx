@@ -82,7 +82,7 @@ export default function ShopPageClient({
                 <Link
                   key={product.id}
                   //href={`/shop/${product.id}`}
-                  href="https://www.instagram.com/lizza.atelier"
+                  href="https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA=="
                   className="group block"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-charcoal mb-6">
