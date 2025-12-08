@@ -16,6 +16,13 @@ export default {
       initialValue: ["6","8","10","12","14","16","18","20"],
     },
     {
+      name: "colors",
+      title: "Colors",
+      type: "array",
+      of: [{ type: "string" }],
+      description: "Leave empty if the product has no color options.",
+    },
+    {
       name: "images",
       title: "Product Images",
       type: "array",

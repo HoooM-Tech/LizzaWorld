@@ -16,6 +16,7 @@ type Product = {
   description: string;
   priceNaira: number;
   sizes: string[];
+  colors?: string[];
   images: string[];
   orderLink?: string;
   isAvailable?: boolean;

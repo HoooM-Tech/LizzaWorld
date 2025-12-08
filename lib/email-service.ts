@@ -77,7 +77,7 @@ export async function sendOrderConfirmation(data: {
   fullName: string; 
   phone: string;  
   address: string; 
-  items: Array<{ title: string; size: string; quantity: number; price: number }>;
+  items: Array<{ title: string; size: string; color: string; quantity: number; price: number }>;
   totalAmount: number;
   deliveryOption?: string;
   deliveryFee?: number;
@@ -90,6 +90,7 @@ export async function sendOrderConfirmation(data: {
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.title}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">Size ${item.size}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.color}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">₦${item.price.toLocaleString()}</td>
       </tr>
@@ -146,6 +147,7 @@ export async function sendOrderConfirmation(data: {
                   <tr>
                     <th>Item</th>
                     <th>Size</th>
+                    <th>Color</th>
                     <th>Qty</th>
                     <th>Price</th>
                   </tr>

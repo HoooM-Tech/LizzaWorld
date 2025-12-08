@@ -1,3 +1,5 @@
+// components/cart-drawer.tsx 
+
 "use client";
 
 import { ReactNode, useEffect } from "react";
@@ -76,7 +78,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
           ) : (
             <div className="space-y-6">
               {items.map((item) => (
-                <div key={`${item.id}-${item.size}`} className="flex gap-4">
+                <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-4">
                   <div className="relative h-24 w-20 flex-shrink-0 overflow-hidden bg-charcoal/5">
                     <Image
                       src={item.image}
@@ -88,7 +90,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                   <div className="flex-1 space-y-2">
                     <div>
                       <h4 className="font-display text-base text-charcoal">{item.title}</h4>
-                      <p className="text-xs text-charcoal/60">Size: {item.size}</p>
+                      <div className="text-xs text-charcoal/60 space-y-0.5">
+                        {item.color !== "Default" && <p>Color: {item.color}</p>}
+                        <p>Size: {item.size}</p>
+                      </div>
                     </div>
                     <p className="text-sm text-charcoal/80">
                       {formatter.format(item.priceNaira)}
@@ -99,7 +104,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                           variant="outline"
                           size="icon"
                           className="h-7 w-7"
-                          onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)}
                         >
                           <Minus className="h-3 w-3 text-charcoal hover:text-white" />
                         </Button>
@@ -108,7 +113,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                           variant="outline"
                           size="icon"
                           className="h-7 w-7"
-                          onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
                         >
                           <Plus className="h-3 w-3 text-charcoal hover:text-white" />
                         </Button>
@@ -117,7 +122,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 ml-auto"
-                        onClick={() => removeItem(item.id, item.size)}
+                        onClick={() => removeItem(item.id, item.size, item.color)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

@@ -15,6 +15,7 @@ export type Product = {
   description: string;
   priceNaira: number;
   sizes: string[];
+  colors?: string[]; // New optional color field
   images: string[];
   orderLink?: string;
   isAvailable?: boolean;
@@ -28,6 +29,7 @@ const formatter = new Intl.NumberFormat("en-NG", {
 
 export function ProductCard({ product }: { product: Product }): JSX.Element {
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<string>("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { addItem } = useCart();
 
@@ -36,9 +38,16 @@ export function ProductCard({ product }: { product: Product }): JSX.Element {
     ? product.images 
     : ["/placeholder.jpg"];
 
+  const hasColors = product.colors && product.colors.length > 0;
+
   const handleAddToCart = (): void => {
     if (!selectedSize) {
       alert("Please select a size");
+      return;
+    }
+
+    if (hasColors && !selectedColor) {
+      alert("Please select a color");
       return;
     }
 
@@ -48,11 +57,13 @@ export function ProductCard({ product }: { product: Product }): JSX.Element {
       description: product.description,
       priceNaira: product.priceNaira,
       size: selectedSize,
+      color: hasColors ? selectedColor : "Default",
       image: images[0], 
     });
 
-    // Reset size selection after adding
+    // Reset selections after adding
     setSelectedSize("");
+    setSelectedColor("");
   };
 
   const goToPrevious = (e: React.MouseEvent) => {
@@ -144,6 +155,22 @@ export function ProductCard({ product }: { product: Product }): JSX.Element {
           <span>{formatter.format(product.priceNaira)}</span>
           <span>Sizes {product.sizes.join(" – ")}</span>
         </div>
+
+        {/* Color Selection - Only show if colors are available */}
+        {product.isAvailable && hasColors && (
+          <Select value={selectedColor} onValueChange={setSelectedColor}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Color" />
+            </SelectTrigger>
+            <SelectContent>
+              {product.colors!.map((color) => (
+                <SelectItem key={color} value={color}>
+                  {color}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
 
         {/* Size Selection */}
         {product.isAvailable && product.sizes.length > 0 && (

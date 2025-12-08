@@ -186,6 +186,7 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
             items: items.map(item => ({
               title: item.title,
               size: item.size,
+              color: item.color,
               quantity: item.quantity,
               price: item.priceNaira
             })),
@@ -243,6 +244,7 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
           id: item.id,
           title: item.title,
           size: item.size,
+          color: item.color,
           quantity: item.quantity,
           price: item.priceNaira
         })),
@@ -281,6 +283,7 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
               items: items.map(item => ({
                 title: item.title,
                 size: item.size,
+                color: item.color,
                 quantity: item.quantity,
                 price: item.priceNaira
               })),
@@ -329,6 +332,7 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
               items: items.map(item => ({
                 title: item.title,
                 size: item.size,
+                color: item.color,
                 quantity: item.quantity,
                 price: item.priceNaira
               })),
@@ -704,6 +708,7 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-charcoal font-medium truncate">{item.title}</p>
+                        <p className="text-xs text-charcoal/60">Color: {item.color}</p>
                         <p className="text-xs text-charcoal/60">Size: {item.size} × {item.quantity}</p>
                         <p className="text-sm text-charcoal/80">{formatter.format(item.priceNaira)}</p>
                       </div>
