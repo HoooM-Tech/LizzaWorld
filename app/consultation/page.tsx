@@ -182,3 +182,4 @@ export default function ConsultationPage() {
     </Container>
   );
 }
+export const revalidate = 60;

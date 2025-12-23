@@ -10,3 +10,4 @@ export default function PrivacyPage() {
     </Container>
   );
 }
+export const revalidate = 60;

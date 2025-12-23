@@ -105,3 +105,4 @@ export default async function BespokePage() {
     </Container>
   );
 }
+export const revalidate = 60;

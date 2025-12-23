@@ -162,3 +162,5 @@ export default async function ShopPage() {
     </Container>
   );
 }
+
+export const revalidate = 60;
