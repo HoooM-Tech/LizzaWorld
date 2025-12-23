@@ -1,3 +1,4 @@
+// schemas/index.ts
 import siteSettings from "./siteSettings";
 import homePage from "./homePage";
 import collection from "./collection";
