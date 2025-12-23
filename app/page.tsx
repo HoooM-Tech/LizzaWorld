@@ -2,7 +2,7 @@ import { Hero } from "@/components/hero";
 import { Section } from "@/components/section";
 import { FeaturedGrid } from "@/components/featured-grid";
 import { Testimonials } from "@/components/testimonials";
-import { InstagramFeed } from "@/components/instagram-feed";
+//import { InstagramFeed } from "@/components/instagram-feed";
 import { CtaBanner } from "@/components/cta-banner";
 import { Container } from "@/components/container";
 import { sanityClient } from "@/sanity/lib/client";

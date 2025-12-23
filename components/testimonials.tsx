@@ -31,7 +31,7 @@ const fallbackTestimonials: TestimonialItem[] = [
     quote: "Lizza Atelier transformed my vision into reality with grace and precision.",
     author: "Victoria M.",
     role: "Entrepreneur"
-  }
+  },
 ];
 
 export function Testimonials({ items }: { items?: TestimonialItem[] }) {

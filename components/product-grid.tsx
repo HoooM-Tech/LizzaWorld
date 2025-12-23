@@ -1,5 +1,17 @@
 import { ProductCard } from "@/components/product-card";
-import { Product } from "@/data/products";
+
+
+type Product = {
+  id: string;
+  title: string;
+  description: string;
+  priceNaira: number;
+  sizes: string[];
+  colors?: string[];
+  images: string[];
+  orderLink?: string;
+  isAvailable?: boolean;
+};
 
 export function ProductGrid({ products }: { products: Product[] }) {
   return (
