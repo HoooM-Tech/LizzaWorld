@@ -2,7 +2,7 @@
 
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 export type CartItem = {
   id: string;
@@ -29,7 +29,26 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }): JSX.Element {
   
-  const [items, setItems] = useState<CartItem[]>([]);
+  const STORAGE_KEY = "lizza-cart-items";
+
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      return stored ? (JSON.parse(stored) as CartItem[]) : [];
+    } catch (error) {
+      console.error("Failed to load cart from storage", error);
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch (error) {
+      console.error("Failed to save cart to storage", error);
+    }
+  }, [items]);
 
   const addItem = (newItem: Omit<CartItem, "quantity">): void => {
     setItems((prevItems) => {
