@@ -49,7 +49,7 @@ export default async function BespokePage() {
         </header>
 
         {/* Coming Soon Section */}
-        <Section>
+        {/* <Section>
           <div className="relative w-full max-w-4xl mx-auto">
             <div className="relative aspect-[3/4] md:aspect-[16/9] overflow-hidden bg-charcoal">
               <Image
@@ -72,7 +72,7 @@ export default async function BespokePage() {
               </div>
             </div>
           </div>
-        </Section>
+        </Section> */}
 
         <Section>
           <ProcessSteps steps={processSteps} />

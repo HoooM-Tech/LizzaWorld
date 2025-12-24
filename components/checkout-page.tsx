@@ -136,10 +136,6 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
       if (!formData.address.trim()) newErrors.address = "Delivery address is required";
       if (!formData.city.trim()) newErrors.city = "City is required";
       if (!formData.state) newErrors.state = "State is required";
-    } else {
-      if (!formData.country.trim() || formData.country === "Nigeria") {
-        newErrors.country = "Please specify international country";
-      }
     }
 
     setErrors(newErrors);
@@ -165,8 +161,9 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
   };
 
   const handleInternationalSubmit = async () => {
-    if (!formData.fullName || !formData.email || !formData.phone || !formData.country) {
-      alert("Please fill in all required fields");
+    const country = formData.country.trim();
+    if (!formData.fullName.trim() || !formData.email.trim() || !formData.phone.trim() || !country || country === "Nigeria") {
+      alert("Please fill in all required fields and specify your country");
       return;
     }
 
