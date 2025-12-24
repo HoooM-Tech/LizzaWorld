@@ -62,6 +62,13 @@ export default defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
+      name: 'colors',
+      title: 'Available Colors',
+      type: 'array',
+      description: 'Colors available for this product (optional)',
+      of: [{ type: 'string' }],
+    }),
+    defineField({
       name: 'sizes',
       title: 'Available Sizes',
       type: 'array',
@@ -81,13 +88,6 @@ export default defineType({
       },
       initialValue: ['6', '8', '10', '12', '14', '16', '18', '20'],
       validation: (Rule) => Rule.required().min(1),
-    }),
-    defineField({
-      name: 'colors',
-      title: 'Available Colors',
-      type: 'array',
-      description: 'Colors available for this product (optional)',
-      of: [{ type: 'string' }],
     }),
     defineField({
       name: 'isAvailable',
