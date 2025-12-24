@@ -8,10 +8,12 @@ import testimonial from "./testimonial";
 import founderBio from "./founderBio";
 import policies from "./policies";
 import consultationOptions from "./consultationOptions";
+import shopPage from "./shopPage";
 
 export const schemaTypes = [
   siteSettings,
   homePage,
+  shopPage,
   collection,
   product,
   bespokePage,

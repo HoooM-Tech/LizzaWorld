@@ -1,3 +1,4 @@
+// sanity.config.ts
 import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
 import { visionTool } from "@sanity/vision";
@@ -10,7 +11,7 @@ export default defineConfig({
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   plugins: [
     deskTool({
-      structure: (S:any) =>
+      structure: (S: any) =>
         S.list()
           .title("Content")
           .items([
@@ -25,6 +26,9 @@ export default defineConfig({
                     ),
                     S.listItem().title("Home Page").child(
                       S.document().schemaType("homePage").documentId("homePage")
+                    ),
+                    S.listItem().title("Shop Page").child(
+                      S.document().schemaType("shopPage").documentId("shopPage")
                     ),
                     S.listItem().title("Bespoke & Bridal Page").child(
                       S.document().schemaType("bespokePage").documentId("bespokePage")
