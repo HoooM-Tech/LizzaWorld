@@ -15,7 +15,7 @@ export type Product = {
   description: string;
   priceNaira: number;
   sizes: string[];
-  colors?: string[]; // New optional color field
+  colors?: string[]; 
   images: string[];
   orderLink?: string;
   isAvailable?: boolean;
@@ -38,7 +38,11 @@ export function ProductCard({ product }: { product: Product }): JSX.Element {
     ? product.images 
     : ["/placeholder.jpg"];
 
-  const hasColors = product.colors && product.colors.length > 0;
+  // Filter out any empty size/color values to avoid invalid Select items
+  const colorOptions = (product.colors ?? []).filter((color) => color.trim() !== "");
+  const sizeOptions = (product.sizes ?? []).filter((size) => size.trim() !== "");
+
+  const hasColors = colorOptions.length > 0;
 
   const handleAddToCart = (): void => {
     if (!selectedSize) {
@@ -153,7 +157,7 @@ export function ProductCard({ product }: { product: Product }): JSX.Element {
         </div>
         <div className="mt-auto flex items-center justify-between text-sm text-charcoal/80">
           <span>{formatter.format(product.priceNaira)}</span>
-          <span>Sizes {product.sizes.join(" – ")}</span>
+          <span>Sizes {sizeOptions.join(" / ")}</span>
         </div>
 
         {/* Color Selection - Only show if colors are available */}
@@ -163,7 +167,7 @@ export function ProductCard({ product }: { product: Product }): JSX.Element {
               <SelectValue placeholder="Select Color" />
             </SelectTrigger>
             <SelectContent>
-              {product.colors!.map((color) => (
+              {colorOptions.map((color) => (
                 <SelectItem key={color} value={color}>
                   {color}
                 </SelectItem>
@@ -173,13 +177,13 @@ export function ProductCard({ product }: { product: Product }): JSX.Element {
         )}
 
         {/* Size Selection */}
-        {product.isAvailable && product.sizes.length > 0 && (
+        {product.isAvailable && sizeOptions.length > 0 && (
           <Select value={selectedSize} onValueChange={setSelectedSize}>
             <SelectTrigger>
               <SelectValue placeholder="Select Size" />
             </SelectTrigger>
             <SelectContent>
-              {product.sizes.map((size) => (
+              {sizeOptions.map((size) => (
                 <SelectItem key={size} value={size}>
                   {size}
                 </SelectItem>
