@@ -50,6 +50,60 @@ export default {
       type: "array",
       of: [{ type: "reference", to: [{ type: "testimonial" }] }],
     },
+    {
+      name: "whyChooseUs",
+      title: "Why Choose Us",
+      type: "object",
+      fields: [
+        {
+          name: "title",
+          title: "Title",
+          type: "string",
+          initialValue: "Atelier crafted for women who refuse to blend in",
+        },
+        {
+          name: "image",
+          title: "Image",
+          type: "image",
+          options: { hotspot: true },
+        },
+        {
+          name: "reasons",
+          title: "Reasons",
+          type: "array",
+          of: [{
+            type: "object",
+            fields: [
+              {
+                name: "icon",
+                title: "Icon",
+                type: "string",
+                options: {
+                  list: [
+                    { title: "Sparkles", value: "Sparkles" },
+                    { title: "Star", value: "Star" },
+                    { title: "Heart", value: "Heart" },
+                    { title: "Ruler", value: "Ruler" },
+                    { title: "Users", value: "Users" },
+                  ],
+                },
+              },
+              {
+                name: "title",
+                title: "Title",
+                type: "string",
+              },
+              {
+                name: "description",
+                title: "Description",
+                type: "text",
+              },
+            ],
+          }],
+          validation: (Rule: any) => Rule.max(3),
+        },
+      ],
+    },
     { name: "showInstagramEmbed", title: "Show Instagram Preview", type: "boolean", initialValue: true },
   ],
 };
