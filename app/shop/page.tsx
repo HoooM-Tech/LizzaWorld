@@ -249,4 +249,5 @@ function ShopPageSkeleton() {
 }
 
 // Force dynamic rendering to always get fresh data
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;

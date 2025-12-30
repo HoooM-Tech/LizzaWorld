@@ -5,15 +5,27 @@ import { Gallery } from "@/components/gallery";
 import { Founder } from "@/components/founder";
 import { CtaBanner } from "@/components/cta-banner";
 import { Testimonial } from "@/components/testimonial";
-import { sanityClient } from "@/sanity/lib/client";
+import { sanityFetch, getTagsForType } from "@/sanity/lib/client";
 import { bespokePageQuery, founderBioQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { Container } from "@/components/container";
 
+// Force dynamic rendering to always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function BespokePage() {
   const [bespokeData, founderData] = await Promise.all([
-    sanityClient.fetch(bespokePageQuery),
-    sanityClient.fetch(founderBioQuery)
+    sanityFetch({
+      query: bespokePageQuery,
+      tags: getTagsForType('bespokePage'),
+      revalidate: 0,
+    }),
+    sanityFetch({
+      query: founderBioQuery,
+      tags: getTagsForType('founderBio'),
+      revalidate: 0,
+    })
   ]);
 
   const processSteps = bespokeData?.processSteps?.map((step: any) => ({
@@ -105,4 +117,3 @@ export default async function BespokePage() {
     </Container>
   );
 }
-export const revalidate = 0;
