@@ -5,11 +5,15 @@ import { Testimonials } from "@/components/testimonials";
 //import { InstagramFeed } from "@/components/instagram-feed";
 import { CtaBanner } from "@/components/cta-banner";
 import { Container } from "@/components/container";
-import { sanityClient } from "@/sanity/lib/client";
+import { sanityFetch, getTagsForType } from "@/sanity/lib/client";
 import { homePageQuery, siteSettingsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { ProcessSteps } from "@/components/process-steps";
 import WhyChooseUs from "@/components/why-choose-us";
+
+// Force dynamic rendering to always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function HomePage() {
   let homeData: any = null;
@@ -17,8 +21,16 @@ export default async function HomePage() {
   
   try {
     [homeData, siteSettings] = await Promise.all([
-      sanityClient.fetch(homePageQuery),
-      sanityClient.fetch(siteSettingsQuery)
+      sanityFetch({
+        query: homePageQuery,
+        tags: getTagsForType('homePage'),
+        revalidate: 0, // Always fetch fresh data
+      }),
+      sanityFetch({
+        query: siteSettingsQuery,
+        tags: getTagsForType('siteSettings'),
+        revalidate: 0, // Always fetch fresh data
+      })
     ]);
   } catch (error) {
     console.error("Error fetching data from Sanity:", error);
@@ -82,4 +94,3 @@ export default async function HomePage() {
     </>
   );
 }
-export const revalidate = 0;

@@ -5,7 +5,9 @@ const config: ClientConfig = {
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: '2024-01-01',
-  useCdn: process.env.NODE_ENV === 'production',
+  // Disable CDN to always get fresh data (CDN caches responses)
+  // If you want CDN for performance, set this to true and rely on webhook revalidation
+  useCdn: false,
   token: process.env.SANITY_API_TOKEN,
 };
 
