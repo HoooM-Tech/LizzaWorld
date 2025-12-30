@@ -16,12 +16,12 @@ export const revalidate = 0;
 
 export default async function BespokePage() {
   const [bespokeData, founderData] = await Promise.all([
-    sanityFetch({
+    sanityFetch<any>({
       query: bespokePageQuery,
       tags: getTagsForType('bespokePage'),
       revalidate: 0,
     }),
-    sanityFetch({
+    sanityFetch<any>({
       query: founderBioQuery,
       tags: getTagsForType('founderBio'),
       revalidate: 0,

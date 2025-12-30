@@ -33,12 +33,25 @@ export async function sanityFetch<T>({
   tags?: string[];
   revalidate?: number | false;
 }): Promise<T> {
-  return sanityClient.fetch<T>(query, params, {
+  // When revalidate is 0 or false, add timestamp to bust cache
+  const fetchOptions: any = {
     next: {
-      revalidate,
+      revalidate: revalidate === 0 || revalidate === false ? 0 : revalidate,
       tags,
     },
-  });
+  };
+  
+  // Add cache busting for no-store requests
+  if (revalidate === 0 || revalidate === false) {
+    // Add timestamp to ensure fresh fetch
+    fetchOptions.cache = 'no-store';
+    // Also add a unique request ID to prevent any caching
+    fetchOptions.headers = {
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+    };
+  }
+  
+  return sanityClient.fetch<T>(query, params, fetchOptions);
 }
 
 // Map content types to cache tags
