@@ -12,11 +12,18 @@ import { ProcessSteps } from "@/components/process-steps";
 import WhyChooseUs from "@/components/why-choose-us";
 
 export default async function HomePage() {
+  let homeData: any = null;
+  let siteSettings: any = null;
   
-  const [homeData, siteSettings] = await Promise.all([
-    sanityClient.fetch(homePageQuery),
-    sanityClient.fetch(siteSettingsQuery)
-  ]);
+  try {
+    [homeData, siteSettings] = await Promise.all([
+      sanityClient.fetch(homePageQuery),
+      sanityClient.fetch(siteSettingsQuery)
+    ]);
+  } catch (error) {
+    console.error("Error fetching data from Sanity:", error);
+    // Continue with null data - components will use fallbacks
+  }
   
   const processSteps = homeData?.processSteps?.map((step: any) => ({
     title: step?.title,
