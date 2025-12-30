@@ -17,6 +17,16 @@ export const homePageQuery = `
   testimonials[]->{
     clientName, roleOrContext, quote
   },
+  processSteps,
+  whyChooseUs {
+    title,
+    image,
+    reasons[] {
+      icon,
+      title,
+      description
+    }
+  },
   showInstagramEmbed
 }`;
 

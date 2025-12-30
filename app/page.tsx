@@ -64,9 +64,11 @@ export default async function HomePage() {
           <Section title="Testimonials">
             <Testimonials items={testimonials} />
           </Section>
-          <Section title="Why Choose Us">
-            <WhyChooseUs />
-          </Section>
+          <WhyChooseUs 
+            title={homeData?.whyChooseUs?.title}
+            image={homeData?.whyChooseUs?.image}
+            reasons={homeData?.whyChooseUs?.reasons}
+          />
           <CtaBanner title="Begin Your Journey" ctaLabel="Book a Consultation" href="/consultation" />
         </div>
       </Container>
