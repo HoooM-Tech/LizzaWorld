@@ -32,6 +32,15 @@ export default async function HomePage() {
         revalidate: 0, // Always fetch fresh data
       })
     ]);
+    
+    // Debug log to verify data is being fetched
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📊 Home Data fetched:', {
+        hasWhyChooseUs: !!homeData?.whyChooseUs,
+        whyChooseUsTitle: homeData?.whyChooseUs?.title,
+        reasonsCount: homeData?.whyChooseUs?.reasons?.length || 0,
+      });
+    }
   } catch (error) {
     console.error("Error fetching data from Sanity:", error);
     // Continue with null data - components will use fallbacks
@@ -84,9 +93,11 @@ export default async function HomePage() {
             <Testimonials items={testimonials} />
           </Section>
           <WhyChooseUs 
-            title={homeData?.whyChooseUs?.title}
-            image={homeData?.whyChooseUs?.image}
-            reasons={homeData?.whyChooseUs?.reasons}
+            title={homeData?.whyChooseUs?.title || undefined}
+            image={homeData?.whyChooseUs?.image || undefined}
+            reasons={homeData?.whyChooseUs?.reasons && Array.isArray(homeData.whyChooseUs.reasons) && homeData.whyChooseUs.reasons.length > 0 
+              ? homeData.whyChooseUs.reasons 
+              : undefined}
           />
           <CtaBanner title="Begin Your Journey" ctaLabel="Book a Consultation" href="/consultation" />
         </div>

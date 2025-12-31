@@ -44,10 +44,13 @@ const defaultReasons: WhyChooseUsReason[] = [
 ];
 
 export default function WhyChooseUs({ 
-  title = "Atelier crafted for women who refuse to blend in",
+  title,
   image,
-  reasons = defaultReasons 
+  reasons
 }: WhyChooseUsProps) {
+  // Use Sanity data if available, otherwise use fallbacks
+  const displayTitle = title || "Atelier crafted for women who refuse to blend in";
+  const displayReasons = reasons && reasons.length > 0 ? reasons : defaultReasons;
   const imageUrl = image ? urlFor(image).url() : "/images/gallery/founder-2.jpg";
 
   return (
@@ -56,7 +59,7 @@ export default function WhyChooseUs({
         {/* Header */}
         <div className="mb-16">
           <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-charcoal max-w-4xl leading-tight">
-            {title}
+            {displayTitle}
           </h2>
         </div>
 
@@ -76,23 +79,23 @@ export default function WhyChooseUs({
           </div>
 
           {/* Reason Cards */}
-          {reasons.map((reason, index) => {
+          {displayReasons.map((reason, index) => {
             const IconComponent = iconMap[reason.icon] || Sparkles;
             return (
               <div key={index} className="bg-ivory border border-charcoal/10 p-8 flex flex-col justify-between">
-                <div>
-                  <div className="mb-6 inline-flex h-12 w-12 items-center justify-center bg-champagne/10">
+            <div>
+              <div className="mb-6 inline-flex h-12 w-12 items-center justify-center bg-champagne/10">
                     <IconComponent className="h-6 w-6 text-champagne" strokeWidth={1.5} />
-                  </div>
-                  <h3 className="font-display text-xl text-charcoal mb-3">
+              </div>
+              <h3 className="font-display text-xl text-charcoal mb-3">
                     {reason.title}
-                  </h3>
-                </div>
-                <div>
-                  <p className="text-sm text-charcoal/70 leading-relaxed">
+              </h3>
+            </div>
+            <div>
+              <p className="text-sm text-charcoal/70 leading-relaxed">
                     {reason.description}
-                  </p>
-                </div>
+              </p>
+            </div>
               </div>
             );
           })}
@@ -102,6 +105,3 @@ export default function WhyChooseUs({
     </section>
   );
 }
-
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';

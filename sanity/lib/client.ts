@@ -45,14 +45,10 @@ export async function sanityFetch<T>({
   if (revalidate === 0 || revalidate === false) {
     // Force no-store to bypass all caches
     fetchOptions.cache = 'no-store';
-    // Add headers to prevent any caching
-    fetchOptions.headers = {
-      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-      'Pragma': 'no-cache',
-      'Expires': '0',
-    };
   }
   
+  // Sanity client fetch - it handles the actual HTTP request
+  // The next.js cache options are passed separately
   return sanityClient.fetch<T>(query, params, fetchOptions);
 }
 
