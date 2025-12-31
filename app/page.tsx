@@ -21,7 +21,8 @@ export default async function HomePage() {
   let siteSettings: any = null;
   
   try {
-    [homeData, siteSettings] = await Promise.all([
+    // Fetch home page data with explicit cache busting
+    const [homeDataResult, siteSettingsResult] = await Promise.all([
       sanityFetch<any>({
         query: homePageQuery,
         tags: getTagsForType('homePage'),
@@ -33,6 +34,9 @@ export default async function HomePage() {
         revalidate: 0, // Always fetch fresh data
       })
     ]);
+    
+    homeData = homeDataResult;
+    siteSettings = siteSettingsResult;
     
     // Debug log to verify data is being fetched (works in production too)
     console.log('📊 Home Data fetched:', {
@@ -49,6 +53,8 @@ export default async function HomePage() {
       reasons: homeData?.whyChooseUs?.reasons?.map((r: any) => r?.title) || [],
       // Log full whyChooseUs object to see what we're getting
       whyChooseUsFull: JSON.stringify(homeData?.whyChooseUs || null, null, 2),
+      // Log the entire homeData to see structure
+      fullHomeData: JSON.stringify(homeData, null, 2).substring(0, 2000), // First 2000 chars
     });
   } catch (error) {
     console.error("Error fetching data from Sanity:", error);

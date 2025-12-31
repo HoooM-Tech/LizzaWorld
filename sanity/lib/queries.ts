@@ -2,7 +2,7 @@
 export const siteSettingsQuery = `*[_type=="siteSettings"][0]`;
 
 export const homePageQuery = `
-*[_type=="homePage"][0]{
+*[_type=="homePage" && !(_id in path("drafts.**"))][0]{
   heroMedia,
   heroHeadline, 
   heroSubtext, 
@@ -18,10 +18,10 @@ export const homePageQuery = `
     clientName, roleOrContext, quote
   },
   processSteps,
-  "whyChooseUs": whyChooseUs {
+  whyChooseUs {
     title,
     image,
-    "reasons": reasons[] {
+    reasons[] {
       icon,
       title,
       description
