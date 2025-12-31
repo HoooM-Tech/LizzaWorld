@@ -37,10 +37,18 @@ export default async function HomePage() {
     // Debug log to verify data is being fetched (works in production too)
     console.log('📊 Home Data fetched:', {
       timestamp: new Date().toISOString(),
+      documentId: homeData?._id,
+      lastUpdated: homeData?._updatedAt,
+      hasHomeData: !!homeData,
+      homeDataKeys: homeData ? Object.keys(homeData) : [],
       hasWhyChooseUs: !!homeData?.whyChooseUs,
+      whyChooseUsValue: homeData?.whyChooseUs,
+      whyChooseUsType: typeof homeData?.whyChooseUs,
       whyChooseUsTitle: homeData?.whyChooseUs?.title,
       reasonsCount: homeData?.whyChooseUs?.reasons?.length || 0,
       reasons: homeData?.whyChooseUs?.reasons?.map((r: any) => r?.title) || [],
+      // Log full whyChooseUs object to see what we're getting
+      whyChooseUsFull: JSON.stringify(homeData?.whyChooseUs || null, null, 2),
     });
   } catch (error) {
     console.error("Error fetching data from Sanity:", error);

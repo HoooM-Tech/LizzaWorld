@@ -18,16 +18,18 @@ export const homePageQuery = `
     clientName, roleOrContext, quote
   },
   processSteps,
-  whyChooseUs {
+  "whyChooseUs": whyChooseUs {
     title,
     image,
-    reasons[] {
+    "reasons": reasons[] {
       icon,
       title,
       description
     }
   },
-  showInstagramEmbed
+  showInstagramEmbed,
+  _id,
+  _updatedAt
 }`;
 
 // Updated: Now includes similarProducts with all necessary fields
