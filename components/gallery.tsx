@@ -27,12 +27,16 @@ export function Gallery({ images }: GalleryProps) {
   //   "/images/lizzaa/img-28.png",
   // ];
 
-  const galleryImages = images?.length ? images : fallbackImages;
+  const galleryImages = images?.filter((img) => img && img.trim() !== '') || fallbackImages.filter((img) => img && img.trim() !== '');
+
+  if (!galleryImages || galleryImages.length === 0) {
+    return null;
+  }
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {galleryImages.map((image, index) => (
-        <div key={image} className="relative h-[320px] overflow-hidden rounded-2xl bg-gray-100">
+        <div key={`gallery-image-${index}-${image}`} className="relative h-[320px] overflow-hidden rounded-2xl bg-gray-100">
           <Image
             src={image}
             alt={`Lizza Atelier creation ${index + 1}`}

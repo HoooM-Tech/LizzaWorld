@@ -33,7 +33,17 @@ export default async function BespokePage() {
     description: step?.body
   }));
 
-  const galleryImages = bespokeData?.galleryImages?.map((image: unknown) => urlFor(image).url());
+  const galleryImages = bespokeData?.galleryImages
+    ?.filter((image: unknown) => image != null)
+    ?.map((image: unknown) => {
+      try {
+        return urlFor(image).url();
+      } catch (error) {
+        console.error('Error processing gallery image:', error);
+        return null;
+      }
+    })
+    ?.filter((url: string | null): url is string => url != null && url.trim() !== '');
   const testimonial = bespokeData?.testimonials?.[0];
   const testimonialContent = testimonial
     ? {

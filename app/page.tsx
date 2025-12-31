@@ -21,12 +21,12 @@ export default async function HomePage() {
   
   try {
     [homeData, siteSettings] = await Promise.all([
-      sanityFetch({
+      sanityFetch<any>({
         query: homePageQuery,
         tags: getTagsForType('homePage'),
         revalidate: 0, // Always fetch fresh data
       }),
-      sanityFetch({
+      sanityFetch<any>({
         query: siteSettingsQuery,
         tags: getTagsForType('siteSettings'),
         revalidate: 0, // Always fetch fresh data
