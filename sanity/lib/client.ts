@@ -33,7 +33,7 @@ export async function sanityFetch<T>({
   tags?: string[];
   revalidate?: number | false;
 }): Promise<T> {
-  // When revalidate is 0 or false, add timestamp to bust cache
+  // When revalidate is 0 or false, bypass all caching
   const fetchOptions: any = {
     next: {
       revalidate: revalidate === 0 || revalidate === false ? 0 : revalidate,
@@ -43,11 +43,13 @@ export async function sanityFetch<T>({
   
   // Add cache busting for no-store requests
   if (revalidate === 0 || revalidate === false) {
-    // Add timestamp to ensure fresh fetch
+    // Force no-store to bypass all caches
     fetchOptions.cache = 'no-store';
-    // Also add a unique request ID to prevent any caching
+    // Add headers to prevent any caching
     fetchOptions.headers = {
-      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
     };
   }
   
@@ -59,7 +61,7 @@ export function getTagsForType(type: string): string[] {
   const tagMap: Record<string, string[]> = {
     product: ['product', 'shop'],
     collection: ['collection', 'shop'],
-    homePage: ['home'],
+    homePage: ['home', 'whyChooseUs'], // Add specific tag for whyChooseUs
     bespokePage: ['bespoke'],
     consultationOptions: ['consultation'],
     testimonial: ['testimonial', 'home', 'bespoke'],

@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
         revalidatePath('/');
         revalidated.push('/');
         revalidateTag('home');
+        revalidateTag('whyChooseUs'); // Also revalidate whyChooseUs specifically
         break;
       
       case 'bespokePage':
