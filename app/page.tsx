@@ -10,12 +10,16 @@ import { homePageQuery, siteSettingsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { ProcessSteps } from "@/components/process-steps";
 import WhyChooseUs from "@/components/why-choose-us";
+import { unstable_noStore as noStore } from 'next/cache';
 
 // Force dynamic rendering to always fetch fresh data
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function HomePage() {
+  // Force no-store to bypass all Next.js caches
+  noStore();
+  
   let homeData: any = null;
   let siteSettings: any = null;
   
@@ -33,14 +37,14 @@ export default async function HomePage() {
       })
     ]);
     
-    // Debug log to verify data is being fetched
-    if (process.env.NODE_ENV === 'development') {
-      console.log('📊 Home Data fetched:', {
-        hasWhyChooseUs: !!homeData?.whyChooseUs,
-        whyChooseUsTitle: homeData?.whyChooseUs?.title,
-        reasonsCount: homeData?.whyChooseUs?.reasons?.length || 0,
-      });
-    }
+    // Debug log to verify data is being fetched (works in production too)
+    console.log('📊 Home Data fetched:', {
+      timestamp: new Date().toISOString(),
+      hasWhyChooseUs: !!homeData?.whyChooseUs,
+      whyChooseUsTitle: homeData?.whyChooseUs?.title,
+      reasonsCount: homeData?.whyChooseUs?.reasons?.length || 0,
+      reasons: homeData?.whyChooseUs?.reasons?.map((r: any) => r?.title) || [],
+    });
   } catch (error) {
     console.error("Error fetching data from Sanity:", error);
     // Continue with null data - components will use fallbacks

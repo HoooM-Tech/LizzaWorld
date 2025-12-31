@@ -33,22 +33,30 @@ export async function sanityFetch<T>({
   tags?: string[];
   revalidate?: number | false;
 }): Promise<T> {
-  // When revalidate is 0 or false, bypass all caching
+  // When revalidate is 0 or false, completely bypass caching
+  if (revalidate === 0 || revalidate === false) {
+    // Use Sanity client with no-store to ensure fresh data
+    // The timestamp in params helps bust any potential query-level cache
+    return sanityClient.fetch<T>(query, {
+      ...params,
+      _t: Date.now(), // Cache bust parameter
+    }, {
+      cache: 'no-store',
+      next: {
+        revalidate: 0,
+        tags,
+      },
+    } as any);
+  }
+  
+  // For cached requests, use the Sanity client normally
   const fetchOptions: any = {
     next: {
-      revalidate: revalidate === 0 || revalidate === false ? 0 : revalidate,
+      revalidate,
       tags,
     },
   };
   
-  // Add cache busting for no-store requests
-  if (revalidate === 0 || revalidate === false) {
-    // Force no-store to bypass all caches
-    fetchOptions.cache = 'no-store';
-  }
-  
-  // Sanity client fetch - it handles the actual HTTP request
-  // The next.js cache options are passed separately
   return sanityClient.fetch<T>(query, params, fetchOptions);
 }
 
