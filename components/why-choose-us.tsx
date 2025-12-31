@@ -1,7 +1,6 @@
 import React from 'react';
 import { Sparkles, Star, Heart, Ruler, Users, LucideIcon } from 'lucide-react';
 import Image from 'next/image';
-import { urlFor } from '@/sanity/lib/image';
 
 // Map icon names to icon components
 const iconMap: Record<string, LucideIcon> = {
@@ -20,7 +19,7 @@ type WhyChooseUsReason = {
 
 type WhyChooseUsProps = {
   title?: string;
-  image?: any;
+  image?: string;
   reasons?: WhyChooseUsReason[];
 };
 
@@ -51,7 +50,7 @@ export default function WhyChooseUs({
   // Use Sanity data if available, otherwise use fallbacks
   const displayTitle = title || "Atelier crafted for women who refuse to blend in";
   const displayReasons = reasons && reasons.length > 0 ? reasons : defaultReasons;
-  const imageUrl = image ? urlFor(image).url() : "/images/gallery/founder-2.jpg";
+  const imageUrl = image || "/images/gallery/founder-2.jpg";
 
   return (
     <section className="bg-ivory py-20 px-6 sm:px-12 lg:px-24">

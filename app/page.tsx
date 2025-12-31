@@ -82,6 +82,15 @@ export default async function HomePage() {
     author: testimonial?.clientName,
     role: testimonial?.roleOrContext
   }));
+  const whyChooseUs = homeData?.whyChooseUs ? {
+    title: homeData.whyChooseUs.title,
+    image: homeData.whyChooseUs.image ? urlFor(homeData.whyChooseUs.image).url() : undefined,
+    reasons: homeData.whyChooseUs.reasons?.map((reason: any) => ({
+      icon: reason?.icon,
+      title: reason?.title,
+      description: reason?.description
+    }))
+  } : undefined;
   const ctas = homeData?.ctas?.map((cta: any) => ({ label: cta?.label, href: cta?.href }));
   const brandIntro =
     homeData?.brandIntro ??
@@ -115,11 +124,9 @@ export default async function HomePage() {
             <Testimonials items={testimonials} />
           </Section>
           <WhyChooseUs 
-            title={homeData?.whyChooseUs?.title || undefined}
-            image={homeData?.whyChooseUs?.image || undefined}
-            reasons={homeData?.whyChooseUs?.reasons && Array.isArray(homeData.whyChooseUs.reasons) && homeData.whyChooseUs.reasons.length > 0 
-              ? homeData.whyChooseUs.reasons 
-              : undefined}
+            title={whyChooseUs?.title}
+            image={whyChooseUs?.image}
+            reasons={whyChooseUs?.reasons}
           />
           <CtaBanner title="Begin Your Journey" ctaLabel="Book a Consultation" href="/consultation" />
         </div>
