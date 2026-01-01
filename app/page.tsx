@@ -46,6 +46,18 @@ export default async function HomePage() {
       timestamp: new Date().toISOString(),
       hasHomeData: !!homeData,
       homeDataKeys: homeData ? Object.keys(homeData) : [],
+      hasWhyChooseUs: !!homeData?.whyChooseUs,
+      whyChooseUsData: homeData?.whyChooseUs ? {
+        hasTitle: !!homeData.whyChooseUs.title,
+        title: homeData.whyChooseUs.title,
+        hasImage: !!homeData.whyChooseUs.image,
+        reasonsCount: homeData.whyChooseUs.reasons?.length || 0,
+        reasons: homeData.whyChooseUs.reasons?.map((r: any) => ({
+          icon: r?.icon,
+          title: r?.title,
+          hasDescription: !!r?.description
+        })) || []
+      } : null,
     });
   } catch (error) {
     console.error("Error fetching data from Sanity:", error);

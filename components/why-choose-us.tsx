@@ -53,7 +53,7 @@ export default function WhyChooseUs({
   const imageUrl = image || "/images/gallery/founder-2.jpg";
 
   return (
-    <section className="bg-ivory py-20 px-6 sm:px-12 lg:px-24">
+    <div className="bg-ivory px-6 sm:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-16">
@@ -101,6 +101,6 @@ export default function WhyChooseUs({
         </div>
 
       </div>
-    </section>
+    </div>
   );
 }
