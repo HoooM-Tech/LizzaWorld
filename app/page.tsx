@@ -12,6 +12,9 @@ import { ProcessSteps } from "@/components/process-steps";
 import WhyChooseUs from "@/components/why-choose-us";
 import { unstable_noStore as noStore } from 'next/cache';
 
+// Force dynamic rendering to always fetch fresh data - MUST be at top level
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function HomePage() {
   // Force no-store to bypass all Next.js caches
@@ -134,6 +137,3 @@ export default async function HomePage() {
     </>
   );
 }
-  // Force dynamic rendering to always fetch fresh data
-  export const dynamic = 'force-dynamic';
-  export const revalidate = 0;

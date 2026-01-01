@@ -2,7 +2,7 @@
 export const siteSettingsQuery = `*[_type=="siteSettings"][0]`;
 
 export const homePageQuery = `
-*[_type=="homePage"][0]{
+*[_type=="homePage" && (_id=="homePage" || _id=="9f635279-5945-485c-ad92-5936f82d048d")][0]{
   heroMedia,
   heroHeadline, 
   heroSubtext, 

@@ -51,11 +51,13 @@ export async function POST(request: NextRequest) {
         break;
       
       case 'homePage':
-        // Revalidate home page
-        revalidatePath('/');
+        // Revalidate home page - be more aggressive for root route
+        revalidatePath('/', 'page'); // Explicitly revalidate as page
+        revalidatePath('/', 'layout'); // Also revalidate layout
         revalidated.push('/');
         revalidateTag('home');
         revalidateTag('whyChooseUs'); // Also revalidate whyChooseUs specifically
+        revalidateTag('settings'); // Site settings might affect homepage
         break;
       
       case 'bespokePage':
