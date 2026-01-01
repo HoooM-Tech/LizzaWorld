@@ -700,6 +700,7 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                           src={item.image}
                           alt={item.title}
                           fill
+                          unoptimized
                           className="object-cover rounded-none"
                         />
                       </div>

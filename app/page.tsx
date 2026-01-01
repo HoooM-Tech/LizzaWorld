@@ -119,7 +119,7 @@ export default async function HomePage() {
           <Section title="Testimonials">
             <Testimonials items={testimonials} />
           </Section>
-          <Section title={whyChooseUs?.title || "Why Choose Us"}>
+          <Section title="Why Choose Us">
             <WhyChooseUs 
               title={whyChooseUs?.title}
               image={whyChooseUs?.image}

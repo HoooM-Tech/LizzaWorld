@@ -84,6 +84,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                       src={item.image}
                       alt={item.title}
                       fill
+                      unoptimized
                       className="object-cover rounded-none"
                     />
                   </div>
