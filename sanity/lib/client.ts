@@ -65,7 +65,7 @@ export function getTagsForType(type: string): string[] {
   const tagMap: Record<string, string[]> = {
     product: ['product', 'shop'],
     collection: ['collection', 'shop'],
-    homePage: ['home', 'whyChooseUs'], // Add specific tag for whyChooseUs
+    homePage: ['home'],
     bespokePage: ['bespoke'],
     consultationOptions: ['consultation'],
     testimonial: ['testimonial', 'home', 'bespoke'],

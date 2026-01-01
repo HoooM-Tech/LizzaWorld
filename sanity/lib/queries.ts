@@ -17,7 +17,6 @@ export const homePageQuery = `
   testimonials[]->{
     clientName, roleOrContext, quote
   },
-  processSteps,
   whyChooseUs {
     title,
     image,
@@ -27,9 +26,8 @@ export const homePageQuery = `
       description
     }
   },
-  showInstagramEmbed,
-  _id,
-  _updatedAt
+  processSteps,
+  showInstagramEmbed
 }`;
 
 // Updated: Now includes similarProducts with all necessary fields

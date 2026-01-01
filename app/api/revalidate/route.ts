@@ -56,7 +56,6 @@ export async function POST(request: NextRequest) {
         revalidatePath('/', 'layout'); // Also revalidate layout
         revalidated.push('/');
         revalidateTag('home');
-        revalidateTag('whyChooseUs'); // Also revalidate whyChooseUs specifically
         revalidateTag('settings'); // Site settings might affect homepage
         break;
       
