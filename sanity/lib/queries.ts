@@ -76,10 +76,14 @@ export const productsByCollectionQuery = (slug: string) => `
 }`;
 
 export const bespokePageQuery = `
-*[_type=="bespokePage"][0]{
+*[_type=="bespokePage"] | order(_updatedAt desc)[0]{
   introCopy, 
   processSteps, 
-  galleryImages, 
+  galleryImages[]{
+    asset->{
+      url
+    }
+  }, 
   galleryVideo,
   testimonials[]->{
     clientName, roleOrContext, quote

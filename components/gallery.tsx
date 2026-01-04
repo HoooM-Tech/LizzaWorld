@@ -9,23 +9,6 @@ export function Gallery({ images }: GalleryProps) {
   const fallbackImages = [
     "",
   ];
-  // const fallbackImages = [
-  //   "/images/lizzaa/img-14.png",
-  //   "/images/lizzaa/img-15.png",
-  //   "/images/lizzaa/img-16.png",
-  //   "/images/lizzaa/img-17.png",
-  //   "/images/lizzaa/img-18.png",
-  //   "/images/lizzaa/img-19.png",
-  //   "/images/lizzaa/img-20.png",
-  //   "/images/lizzaa/img-21.png",
-  //   "/images/lizzaa/img-22.png",
-  //   "/images/lizzaa/img-23.png",
-  //   "/images/lizzaa/img-24.png",
-  //   "/images/lizzaa/img-25.png",
-  //   "/images/lizzaa/img-26.png",
-  //   "/images/lizzaa/img-27.png",
-  //   "/images/lizzaa/img-28.png",
-  // ];
 
   const galleryImages = images?.filter((img) => img && img.trim() !== '') || fallbackImages.filter((img) => img && img.trim() !== '');
 
