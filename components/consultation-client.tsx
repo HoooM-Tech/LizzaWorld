@@ -30,7 +30,7 @@ const consultationOptions = [
     id: "online",
     title: "Online Consultation",
     duration: "45 minutes",
-    price: 25000,
+    price: 150000,
     icon: Video,
     features: [
       "Video call consultation",
@@ -43,7 +43,7 @@ const consultationOptions = [
     id: "onsite",
     title: "On-Site Consultation",
     duration: "1 hour",
-    price: 50000,
+    price: 250000,
     icon: MapPin,
     features: [
       "In-person atelier visit",
