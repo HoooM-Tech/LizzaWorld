@@ -42,8 +42,8 @@ export async function POST(request: NextRequest) {
         revalidated.push('/shop');
         
         if (slug?.current) {
-          revalidatePath(`/collections/${slug.current}`);
-          revalidated.push(`/collections/${slug.current}`);
+          revalidatePath(`/shop/${slug.current}`);
+          revalidated.push(`/shop/${slug.current}`);
         }
         
         revalidateTag('collection');

@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
         id: item._id,
         title: item.title,
         type: "collection" as const,
-        url: `/collections/${item.slug}`,
+        url: `/shop/${item.slug}`,
         description: item.description
       }))
     ];

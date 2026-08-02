@@ -10,6 +10,7 @@ import { homePageQuery, siteSettingsQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { ProcessSteps } from "@/components/process-steps";
 import WhyChooseUs from "@/components/why-choose-us";
+import { ExploreStyles } from "@/components/explore-styles";
 import { unstable_noStore as noStore } from 'next/cache';
 
 // Force dynamic rendering to always fetch fresh data - MUST be at top level
@@ -88,6 +89,11 @@ export default async function HomePage() {
     }))
   } : undefined;
   const ctas = homeData?.ctas?.map((cta: any) => ({ label: cta?.label, href: cta?.href }));
+  const exploreStylesData = homeData?.exploreStyles?.map((style: any) => ({
+    name: style?.name,
+    image: style?.image?.asset?.url,
+    href: style?.href
+  })).filter((c: any) => c.name && c.image && c.href);
   const brandIntro =
     homeData?.brandIntro ??
     "Lizza Atelier is a refined womenswear brand redefining elegance through purpose and craftsmanship. We create timeless pieces for women in leadership, business, and influence — those who embody grace, power, and authenticity. Every design is thoughtfully tailored to celebrate femininity, confidence, and becoming — where style meets meaning, and every detail tells a story.";
@@ -112,6 +118,9 @@ export default async function HomePage() {
           <CtaBanner title="Discover Timeless Pieces" ctaLabel="Visit Shop" href="/shop" />
           <Section>
             <FeaturedGrid images={featuredVisuals} />
+          </Section>
+          <Section>
+            <ExploreStyles categories={exploreStylesData} />
           </Section>
           <Section title="Our Process">
             <ProcessSteps steps={processSteps} />

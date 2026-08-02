@@ -77,19 +77,20 @@ export async function sendOrderConfirmation(data: {
   fullName: string; 
   phone: string;  
   address: string; 
-  items: Array<{ title: string; size: string; color: string; quantity: number; price: number }>;
+  items: Array<{ title: string; size: string; color: string; height?: string; quantity: number; price: number }>;
   totalAmount: number;
   deliveryOption?: string;
   deliveryFee?: number;
   finalTotal?: number;
   reference: string;
+  fitProfile?: { measurements?: Record<string, string>; bodyShape?: string };
 }) {
   const itemsList = data.items
     .map(
       item => `
       <tr>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.title}</td>
-        <td style="padding: 10px; border-bottom: 1px solid #ddd;">Size ${item.size}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #ddd;">Size ${item.size}${item.height ? ` / Height ${item.height}` : ''}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.color}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
         <td style="padding: 10px; border-bottom: 1px solid #ddd;">₦${item.price.toLocaleString()}</td>
@@ -140,6 +141,17 @@ export async function sendOrderConfirmation(data: {
                 <p><strong>Address:</strong> ${data.address}</p>
                 <p><strong>Delivery Option:</strong> ${deliveryText}</p>
               </div>
+
+              ${data.fitProfile ? `
+                <div class="details" style="margin-top: 10px;">
+                  <h3>Saved Fit Profile:</h3>
+                  <p><strong>Body Shape:</strong> ${data.fitProfile.bodyShape || 'Balanced'}</p>
+                  ${Object.entries(data.fitProfile.measurements || {})
+                    .filter(([_, v]) => v)
+                    .map(([k, v]) => `<p><strong>${k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:</strong> ${v}"</p>`)
+                    .join('')}
+                </div>
+              ` : ''}
               
               <h3>Order Details:</h3>
               <table>
@@ -197,11 +209,11 @@ export async function sendInternationalShippingInquiry(data: {
   phone: string;
   country: string;
   address?: string;
-  items: Array<{ title: string; size: string; quantity: number; price: number }>;
+  items: Array<{ title: string; size: string; color?: string; height?: string; quantity: number; price: number }>;
   totalAmount: number;
 }) {
   const itemsList = data.items
-    .map(item => `${item.title} (Size ${item.size}) × ${item.quantity} - ₦${item.price.toLocaleString()}`)
+    .map(item => `${item.title} (Size ${item.size}${item.height ? `, Height ${item.height}` : ''}${item.color ? `, Color ${item.color}` : ''}) × ${item.quantity} - ₦${item.price.toLocaleString()}`)
     .join('\n');
 
   // Send to customer
@@ -281,16 +293,70 @@ export async function sendInternationalShippingInquiry(data: {
   });
 }
 
+// Send welcome email to newsletter subscriber
+export async function sendNewsletterConfirmation(data: { email: string; fullName: string }) {
+  const mailOptions = {
+    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
+    to: data.email,
+    subject: 'Welcome to the Lizza Atelier Newsletter',
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: 'Playfair Display', Georgia, serif; line-height: 1.8; color: #1c1c1c; background-color: #faf6f0; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 40px auto; padding: 40px; background: #ffffff; border: 1px solid rgba(28,28,28,0.08); }
+            .header { text-align: center; border-bottom: 1px solid rgba(28,28,28,0.08); padding-bottom: 30px; }
+            .logo { font-size: 24px; font-weight: 300; letter-spacing: 0.3em; text-transform: uppercase; color: #1c1c1c; margin: 0; }
+            .content { padding: 40px 0; }
+            .greeting { font-size: 18px; margin-bottom: 24px; font-weight: 400; color: #1c1c1c; }
+            .text { font-size: 14px; color: #4a4a4a; margin-bottom: 20px; }
+            .divider { width: 40px; height: 1px; background-color: #1c1c1c; margin: 30px auto; }
+            .footer { text-align: center; color: #8c8c8c; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding-top: 30px; border-top: 1px solid rgba(28,28,28,0.08); }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1 class="logo">Lizza Atelier</h1>
+            </div>
+            <div class="content" style="text-align: center;">
+              <p class="greeting">Welcome to the inner circle, ${data.fullName}</p>
+              <p class="text">You have successfully subscribed to the Lizza Atelier newsletter. You will now receive private viewings, collection drops, and stories of modern luxury directly in your inbox.</p>
+              <div class="divider"></div>
+              <p class="text" style="font-style: italic;">Luxury with intention.</p>
+            </div>
+            <div class="footer">
+              <p>&copy; ${new Date().getFullYear()} Lizza Atelier. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+}
+
 // Send notification to admin
-export async function sendAdminNotification(type: 'consultation' | 'order', data: any) {
+export async function sendAdminNotification(type: 'consultation' | 'order' | 'newsletter', data: any) {
   const adminEmail = process.env.ADMIN_EMAIL || process.env.ZOHO_EMAIL;
   
+  let subject = '';
+  if (type === 'consultation') {
+    subject = `New Consultation Booking - ${data.reference || 'N/A'}`;
+  } else if (type === 'order') {
+    subject = `New Order - ${data.reference || 'N/A'}`;
+  } else if (type === 'newsletter') {
+    subject = `New Newsletter Subscriber: ${data.fullName}`;
+  }
+
   const mailOptions = {
     from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
     to: adminEmail,
-    subject: `New ${type === 'consultation' ? 'Consultation Booking' : 'Order'} - ${data.reference}`,
+    subject,
     html: `
-      <h2>New ${type === 'consultation' ? 'Consultation Booking' : 'Order'}</h2>
+      <h2>New ${type.charAt(0).toUpperCase() + type.slice(1)} Event</h2>
       <pre>${JSON.stringify(data, null, 2)}</pre>
     `,
   };

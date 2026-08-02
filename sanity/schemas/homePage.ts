@@ -104,6 +104,19 @@ export default {
         },
       ],
     },
+    {
+      name: "exploreStyles",
+      title: "Explore Styles Categories",
+      type: "array",
+      of: [{
+        type: "object",
+        fields: [
+          { name: "name", title: "Category Name", type: "string" },
+          { name: "image", title: "Category Image", type: "image", options: { hotspot: true } },
+          { name: "href", title: "Link Path (e.g. /shop/jackets)", type: "string" },
+        ],
+      }],
+    },
     { name: "showInstagramEmbed", title: "Show Instagram Preview", type: "boolean", initialValue: true },
   ],
 };

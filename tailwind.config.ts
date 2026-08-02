@@ -10,9 +10,11 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
-  			champagne: '#F7E7CE',
-  			charcoal: '#1B1B1B',
-  			ivory: '#FFFFF0',
+  			champagne: '#B88A44',
+  			charcoal: '#3A2418',
+  			ivory: '#F5F0E8',
+  			white: '#F5F0E8',
+  			black: '#3A2418',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

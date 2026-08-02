@@ -4,7 +4,8 @@ import {
   sendConsultationConfirmation, 
   sendOrderConfirmation, 
   sendAdminNotification,
-  sendInternationalShippingInquiry 
+  sendInternationalShippingInquiry,
+  sendNewsletterConfirmation
 } from '@/lib/email-service';
 
 export async function POST(request: NextRequest) {
@@ -22,6 +23,9 @@ export async function POST(request: NextRequest) {
       await sendAdminNotification('order', data);
     } else if (type === 'international_inquiry') {
       await sendInternationalShippingInquiry(data);
+    } else if (type === 'newsletter') {
+      await sendNewsletterConfirmation(data);
+      await sendAdminNotification('newsletter', data);
     } else {
       return NextResponse.json({ error: 'Invalid email type' }, { status: 400 });
     }

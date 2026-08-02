@@ -4,6 +4,8 @@ import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CartProvider } from "@/components/cart-context";
+import { CurrencyProvider } from "@/components/currency-context";
+import { NewsletterModal } from "@/components/newsletter-modal";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -40,15 +42,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${lato.variable}`}>
-      <body className="bg-ivory text-charcoal antialiased">
-        <CartProvider>
-          <Navbar />
-          <main className="min-h-screen pt-20">
-            {children}
-          </main>
-          <Footer />
-        </CartProvider>
+    <html lang="en" className={`${playfair.variable} ${lato.variable}`} suppressHydrationWarning>
+      <body className="bg-ivory text-charcoal antialiased" suppressHydrationWarning>
+        <CurrencyProvider>
+          <CartProvider>
+            <Navbar />
+            <main className="min-h-screen pt-20">
+              {children}
+            </main>
+            <Footer />
+            <NewsletterModal />
+          </CartProvider>
+        </CurrencyProvider>
       </body>
     </html>
   );

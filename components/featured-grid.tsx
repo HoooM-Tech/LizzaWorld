@@ -42,7 +42,7 @@ export function FeaturedGrid({ images }: FeaturedGridProps) {
               src={visualSources[0] ?? fallbackImages[0]}
               alt={captions[0]}
               fill
-              unoptimized
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:grayscale rounded-sm"
             />
           </div>
@@ -67,7 +67,6 @@ export function FeaturedGrid({ images }: FeaturedGridProps) {
               alt={captions[1]}
               width={imageConfig[1].width}
               height={imageConfig[1].height}
-              unoptimized
               className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:grayscale rounded-sm"
             />
           </div>
@@ -92,7 +91,6 @@ export function FeaturedGrid({ images }: FeaturedGridProps) {
               alt={captions[2]}
               width={imageConfig[2].width}
               height={imageConfig[2].height}
-              unoptimized
               className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:grayscale rounded-sm"
             />
           </div>

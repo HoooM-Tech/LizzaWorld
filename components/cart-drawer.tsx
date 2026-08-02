@@ -9,20 +9,16 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/cart-context";
 import { useRouter } from "next/navigation";
+import { useCurrency } from "@/components/currency-context";
 
 type CartDrawerProps = {
   open: boolean;
   onClose: () => void;
 };
 
-const formatter = new Intl.NumberFormat("en-NG", {
-  style: "currency",
-  currency: "NGN",
-  minimumFractionDigits: 0
-});
-
 export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
   const { items, removeItem, updateQuantity, totalPrice, totalItems } = useCart();
+  const { formatPrice } = useCurrency();
   const router = useRouter();
 
   useEffect(() => {
@@ -84,7 +80,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                       src={item.image}
                       alt={item.title}
                       fill
-                      unoptimized
+                      sizes="80px"
                       className="object-cover rounded-none"
                     />
                   </div>
@@ -94,10 +90,11 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                       <div className="text-xs text-charcoal/60 space-y-0.5">
                         {item.color !== "Default" && <p>Color: {item.color}</p>}
                         <p>Size: {item.size}</p>
+                        {item.height && <p>Height: {item.height}</p>}
                       </div>
                     </div>
                     <p className="text-sm text-charcoal/80">
-                      {formatter.format(item.priceNaira)}
+                      {formatPrice(item.priceNaira)}
                     </p>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
@@ -105,7 +102,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                           variant="outline"
                           size="icon"
                           className="h-7 w-7"
-                          onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity - 1, item.height)}
                         >
                           <Minus className="h-3 w-3 text-charcoal hover:text-white" />
                         </Button>
@@ -114,7 +111,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                           variant="outline"
                           size="icon"
                           className="h-7 w-7"
-                          onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1, item.height)}
                         >
                           <Plus className="h-3 w-3 text-charcoal hover:text-white" />
                         </Button>
@@ -123,7 +120,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 ml-auto"
-                        onClick={() => removeItem(item.id, item.size, item.color)}
+                        onClick={() => removeItem(item.id, item.size, item.color, item.height)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -139,7 +136,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps): JSX.Element {
           <div className="border-t border-charcoal/10 p-8 space-y-4">
             <div className="flex items-center justify-between text-lg">
               <span className="font-display">Total</span>
-              <span className="font-display">{formatter.format(totalPrice)}</span>
+              <span className="font-display">{formatPrice(totalPrice)}</span>
             </div>
             <Button 
               className="w-full" 

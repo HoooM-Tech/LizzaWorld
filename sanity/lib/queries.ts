@@ -27,6 +27,15 @@ export const homePageQuery = `
     }
   },
   processSteps,
+  exploreStyles[] {
+    name,
+    href,
+    image {
+      asset-> {
+        url
+      }
+    }
+  },
   showInstagramEmbed
 }`;
 
@@ -45,6 +54,8 @@ export const featuredCollectionQuery = `
     priceNaira,
     sizes,
     colors,
+    tags,
+    apparelTypes,
     images[]{
       asset->{
         _id,
@@ -65,6 +76,8 @@ export const productsByCollectionQuery = (slug: string) => `
   description, 
   sizes,
   colors,
+  tags,
+  apparelTypes,
   images[]{
     asset->{
       _id,
@@ -142,6 +155,8 @@ export const collectionBySlugQuery = (slug: string) => `
     priceNaira,
     sizes,
     colors,
+    tags,
+    apparelTypes,
     images[]{
       asset->{
         _id,
@@ -158,6 +173,8 @@ export const collectionBySlugQuery = (slug: string) => `
     priceNaira,
     sizes,
     colors,
+    tags,
+    apparelTypes,
     images[]{
       asset->{
         _id,
@@ -203,6 +220,8 @@ export const allProductsQuery = `
   priceNaira,
   sizes,
   colors,
+  tags,
+  apparelTypes,
   images[]{
     asset->{
       _id,

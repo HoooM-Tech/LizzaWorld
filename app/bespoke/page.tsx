@@ -2,11 +2,10 @@ import Image from "next/image";
 import { Section } from "@/components/section";
 import { ProcessSteps } from "@/components/process-steps";
 import { Gallery } from "@/components/gallery";
-import { Founder } from "@/components/founder";
 import { CtaBanner } from "@/components/cta-banner";
 import { Testimonial } from "@/components/testimonial";
 import { sanityFetch, getTagsForType } from "@/sanity/lib/client";
-import { bespokePageQuery, founderBioQuery } from "@/sanity/lib/queries";
+import { bespokePageQuery } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { Container } from "@/components/container";
 
@@ -15,18 +14,11 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function BespokePage() {
-  const [bespokeData, founderData] = await Promise.all([
-    sanityFetch<any>({
-      query: bespokePageQuery,
-      tags: getTagsForType('bespokePage'),
-      revalidate: 0,
-    }),
-    sanityFetch<any>({
-      query: founderBioQuery,
-      tags: getTagsForType('founderBio'),
-      revalidate: 0,
-    })
-  ]);
+  const bespokeData = await sanityFetch<any>({
+    query: bespokePageQuery,
+    tags: getTagsForType('bespokePage'),
+    revalidate: 0,
+  });
 
   const processSteps = bespokeData?.processSteps?.map((step: any) => ({
     title: step?.title,
@@ -44,9 +36,6 @@ export default async function BespokePage() {
         role: testimonial.roleOrContext
       }
     : undefined;
-
-  const founderPortrait = founderData?.portrait ? urlFor(founderData.portrait).url() : undefined;
-  const founderBio = founderData?.shortBio ?? founderData?.fullBio;
 
   const introCopy =
     bespokeData?.introCopy ??
@@ -104,15 +93,6 @@ export default async function BespokePage() {
             <Testimonial quote={testimonialContent.quote} author={testimonialContent.author} role={testimonialContent.role} />
           </Section>
         )}
-
-        <Section>
-          <Founder
-            name={founderData?.name}
-            title={founderData?.title}
-            shortBio={founderBio}
-            portrait={founderPortrait}
-          />
-        </Section>
 
         <CtaBanner title={ctaLabel} ctaLabel={ctaLabel} href={ctaHref} />
       </div>

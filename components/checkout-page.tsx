@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/components/cart-context";
+import { useCurrency } from "@/components/currency-context";
 import { usePaystackPayment } from "@/hooks/use-paystack";
 import { ArrowLeft, MapPin, User, Truck, Globe } from "lucide-react";
 
@@ -99,9 +100,30 @@ interface CheckoutPageProps {
 
 export default function CheckoutPage({ onBack }: CheckoutPageProps) {
   const { items, totalPrice, totalItems, clearCart } = useCart();
+  const { formatPrice, currency } = useCurrency();
   const { initiatePayment, isLoading } = usePaystackPayment();
   const [formData, setFormData] = useState<CheckoutForm>(initialFormState);
   const [errors, setErrors] = useState<Partial<CheckoutForm>>({});
+  const [fitProfile, setFitProfile] = useState<any>(null);
+
+  useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = window.localStorage.getItem("fitProfile");
+        if (stored) {
+          setFitProfile(JSON.parse(stored));
+        }
+      } catch (e) {
+        console.error("Error loading fitProfile:", e);
+      }
+    }
+  });
+
+  const formatDualPrice = (priceNaira: number): string => {
+    const formattedNaira = formatter.format(priceNaira);
+    if (currency.code === "NGN") return formattedNaira;
+    return `${formattedNaira} (approx. ${formatPrice(priceNaira)})`;
+  };
   const [orderComplete, setOrderComplete] = useState(false);
   const [paymentReference, setPaymentReference] = useState("");
   const [showInternationalForm, setShowInternationalForm] = useState(false);
@@ -184,10 +206,12 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
               title: item.title,
               size: item.size,
               color: item.color,
+              height: item.height || "",
               quantity: item.quantity,
               price: item.priceNaira
             })),
             totalAmount: totalPrice,
+            fitProfile: fitProfile || undefined,
           },
         }),
       });
@@ -242,11 +266,13 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
           title: item.title,
           size: item.size,
           color: item.color,
+          height: item.height || "",
           quantity: item.quantity,
           price: item.priceNaira
         })),
         totalItems,
-        order_type: "ready_to_wear"
+        order_type: "ready_to_wear",
+        fitProfile: fitProfile || undefined
       }
     };
 
@@ -281,12 +307,14 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                 title: item.title,
                 size: item.size,
                 color: item.color,
+                height: item.height || "",
                 quantity: item.quantity,
                 price: item.priceNaira
               })),
               totalAmount: totalPrice,
               finalTotal: finalTotal,
               reference: ref,
+              fitProfile: fitProfile || undefined,
             });
             
             setPaymentReference(ref);
@@ -330,12 +358,14 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                 title: item.title,
                 size: item.size,
                 color: item.color,
+                height: item.height || "",
                 quantity: item.quantity,
                 price: item.priceNaira
               })),
               totalAmount: totalPrice,
               finalTotal: finalTotal,
               reference,
+              fitProfile: fitProfile || undefined,
             });
             
             setPaymentReference(reference);
@@ -372,12 +402,12 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                   {items.map((item, idx) => (
                     <div key={idx} className="flex justify-between">
                       <span>{item.title} (Size {item.size}) × {item.quantity}</span>
-                      <span>{formatter.format(item.priceNaira)}</span>
+                      <span>{formatDualPrice(item.priceNaira)}</span>
                     </div>
                   ))}
                   <div className="flex justify-between font-semibold pt-2 border-t">
                     <span>Subtotal</span>
-                    <span>{formatter.format(totalPrice)}</span>
+                    <span>{formatDualPrice(totalPrice)}</span>
                   </div>
                   <p className="text-xs text-charcoal/60 pt-2">
                     + International shipping (to be calculated)
@@ -449,8 +479,8 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                   <p><strong>Name:</strong> {formData.fullName}</p>
                   <p><strong>Phone:</strong> {formData.phone}</p>
                   <p><strong>Address:</strong> {formData.address}, {formData.city}, {formData.state}</p>
-                  <p><strong>Delivery:</strong> {formData.deliveryOption === 'within-lagos' ? 'Within Lagos' : 'Outside Lagos'} - {formatter.format(deliveryFee)}</p>
-                  <p className="pt-2 border-t"><strong>Total Paid:</strong> {formatter.format(finalTotal)}</p>
+                  <p><strong>Delivery:</strong> {formData.deliveryOption === 'within-lagos' ? 'Within Lagos' : 'Outside Lagos'} - {formatDualPrice(deliveryFee)}</p>
+                  <p className="pt-2 border-t"><strong>Total Paid:</strong> {formatDualPrice(finalTotal)}</p>
                 </div>
               </div>
               <p className="text-sm text-charcoal/60">
@@ -542,6 +572,44 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Personalized Fit Profile */}
+            {fitProfile && (
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-champagne/10 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-champagne" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.121 14.121L19 19m-7-7h7m-7-7h7M6 21H3a1 1 0 01-1-1v-3a1 1 0 011-1h3m3 0H6v-3h3m3 0H9V9h3m3 0h-3V6h3m3 0h-3V3h3a1 1 0 011 1v3a1 1 0 01-1 1z" />
+                      </svg>
+                    </div>
+                    <h2 className="font-display text-xl text-charcoal">Personalized Fit Profile</h2>
+                  </div>
+                  
+                  <div className="bg-champagne/5 border border-champagne/20 p-4 rounded-sm">
+                    <p className="text-xs text-charcoal/70 mb-4">
+                      Your saved fit measurements will be referenced for your bespoke sizes:
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-[11px] leading-relaxed">
+                      <div>
+                        <span className="text-charcoal/60 uppercase block">Body Shape</span>
+                        <strong className="text-charcoal font-semibold text-xs">{fitProfile.bodyShape || "Balanced"}</strong>
+                      </div>
+                      {fitProfile.measurements && Object.entries(fitProfile.measurements).map(([key, val]) => {
+                        if (!val) return null;
+                        const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        return (
+                          <div key={key}>
+                            <span className="text-charcoal/60 uppercase block">{label}</span>
+                            <strong className="text-charcoal font-semibold text-xs">{val as string}"</strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Delivery Options */}
             <Card>
@@ -700,15 +768,18 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                           src={item.image}
                           alt={item.title}
                           fill
-                          unoptimized
+                          sizes="64px"
                           className="object-cover rounded-none"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-charcoal font-medium truncate">{item.title}</p>
                         <p className="text-xs text-charcoal/60">Color: {item.color}</p>
-                        <p className="text-xs text-charcoal/60">Size: {item.size} × {item.quantity}</p>
-                        <p className="text-sm text-charcoal/80">{formatter.format(item.priceNaira)}</p>
+                        <p className="text-xs text-charcoal/60">
+                          Size: {item.size}
+                          {item.height ? ` / Height: ${item.height}` : ""} × {item.quantity}
+                        </p>
+                        <p className="text-sm text-charcoal/80">{formatDualPrice(item.priceNaira)}</p>
                       </div>
                     </div>
                   ))}
@@ -717,7 +788,7 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                 <div className="border-t border-charcoal/10 pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-charcoal/70">Subtotal</span>
-                    <span className="text-charcoal">{formatter.format(totalPrice)}</span>
+                    <span className="text-charcoal">{formatDualPrice(totalPrice)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-charcoal/70">Delivery</span>
@@ -725,7 +796,7 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                       {formData.deliveryOption === 'international' 
                         ? 'Contact us' 
                         : deliveryFee > 0 
-                          ? formatter.format(deliveryFee)
+                          ? formatDualPrice(deliveryFee)
                           : 'Select option'}
                     </span>
                   </div>
@@ -733,8 +804,8 @@ export default function CheckoutPage({ onBack }: CheckoutPageProps) {
                     <span>Total</span>
                     <span>
                       {formData.deliveryOption === 'international'
-                        ? formatter.format(totalPrice)
-                        : formatter.format(finalTotal)}
+                        ? formatDualPrice(totalPrice)
+                        : formatDualPrice(finalTotal)}
                     </span>
                   </div>
                 </div>

@@ -5,6 +5,9 @@ export type Product = {
   priceNaira: number;
   sizes: string[];
   colors?: string[];
+  heights?: string[];
+  tags?: string[];
+  createdAt?: string;
   images: string[];
   orderLink?: string;
   isAvailable?: boolean;
@@ -23,6 +26,8 @@ export const products: Product[] = [
       "A sculpted power-suit dress crafted for the woman who leads with grace. Precision tailoring, clean lines, and a silhouette that commands attention — sophistication redefined.",
     sizes: ["6", "8", "10", "12", "14", "16", "18", "20"],
     colors: ["Black", "Navy", "Burgundy", "White"],
+    tags: ["NEW"],
+    createdAt: "2026-06-10",
     orderLink: "https://www.instagram.com/reel/DQHMyIvjPjd/?igsh=N3R2eXF3ajkyd3lw",
     isAvailable: true
   },
@@ -37,6 +42,7 @@ export const products: Product[] = [
     description: "A flowing wrap silhouette envisioned for intimate celebrations and powerful presence alike.",
     sizes: ["6", "8", "10", "12", "14", "16", "18", "20"],
     colors: ["Black", "Navy", "Burgundy", "White"],
+    createdAt: "2026-05-15",
     isAvailable: true
   },
   {
@@ -51,6 +57,8 @@ export const products: Product[] = [
     description: "Architectural tailoring with softened edges — crafted for boardrooms and beyond.",
     sizes: ["6", "8", "10", "12", "14", "16", "18", "20"],
     colors: ["Black", "Navy", "Burgundy", "White"],
+    tags: ["NEW"],
+    createdAt: "2026-06-08",
     isAvailable: true
   },
   {
@@ -65,6 +73,7 @@ export const products: Product[] = [
     description: "A luminous co-ord set in champagne silk for effortless ceremony dressing.",
     sizes: ["6", "8", "10", "12", "14", "16", "18", "20"],
     colors: ["Black", "Navy", "Burgundy", "White"],
+    createdAt: "2026-04-20",
     isAvailable: true
   }
 ];

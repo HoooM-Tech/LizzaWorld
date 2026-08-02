@@ -69,6 +69,44 @@ export default defineType({
       of: [{ type: 'string' }],
     }),
     defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      description: 'Product tags — "NEW" shows the New Arrivals badge',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: '🆕 New Arrival', value: 'NEW' },
+          { title: '🔥 Bestseller', value: 'BESTSELLER' },
+          { title: '⭐ Featured', value: 'FEATURED' },
+          { title: '🏷️ Sale', value: 'SALE' },
+          { title: '⚡ Limited Edition', value: 'LIMITED' },
+        ],
+      },
+    }),
+    defineField({
+      name: 'apparelTypes',
+      title: 'Apparel Category',
+      type: 'array',
+      description: 'Select the category/style this product belongs to. Used for style filtering on the Shop page and style category pages (e.g. /shop/suits).',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'Suit', value: 'suit' },
+          { title: 'Jacket / Blazer', value: 'jacket' },
+          { title: 'Pant / Trouser', value: 'pant' },
+          { title: 'Short', value: 'short' },
+          { title: 'Skirt', value: 'skirt' },
+          { title: 'Coat', value: 'coat' },
+          { title: 'Hat', value: 'hat' },
+          { title: 'Bridal Dress', value: 'bridal' },
+          { title: 'Dress / Gown', value: 'dress' },
+          { title: 'Top / Blouse', value: 'top' },
+          { title: 'Set / Co-ord', value: 'set' },
+        ],
+      },
+    }),
+    defineField({
       name: 'sizes',
       title: 'Available Sizes',
       type: 'array',
@@ -76,6 +114,12 @@ export default defineType({
       of: [{ type: 'string' }],
       options: {
         list: [
+          { title: 'S', value: 'S' },
+          { title: 'M', value: 'M' },
+          { title: 'L', value: 'L' },
+          { title: 'XL', value: 'XL' },
+          { title: '2XL', value: '2XL' },
+          { title: '3XL', value: '3XL' },
           { title: '6', value: '6' },
           { title: '8', value: '8' },
           { title: '10', value: '10' },
@@ -86,8 +130,32 @@ export default defineType({
           { title: '20', value: '20' },
         ],
       },
-      initialValue: ['6', '8', '10', '12', '14', '16', '18', '20'],
+      initialValue: ['S', 'M', 'L', 'XL'],
       validation: (Rule) => Rule.required().min(1),
+    }),
+    defineField({
+      name: 'heights',
+      title: 'Available Heights',
+      type: 'array',
+      description: 'Heights available for this product (optional). If left empty, it will fall back to the default height options (5\'2" to 6\'1").',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: "5'2\"", value: "5'2\"" },
+          { title: "5'3\"", value: "5'3\"" },
+          { title: "5'4\"", value: "5'4\"" },
+          { title: "5'5\"", value: "5'5\"" },
+          { title: "5'6\"", value: "5'6\"" },
+          { title: "5'7\"", value: "5'7\"" },
+          { title: "5'8\"", value: "5'8\"" },
+          { title: "5'9\"", value: "5'9\"" },
+          { title: "5'10\"", value: "5'10\"" },
+          { title: "5'11\"", value: "5'11\"" },
+          { title: "6'0\"", value: "6'0\"" },
+          { title: "6'1\"", value: "6'1\"" },
+        ],
+      },
+      initialValue: ["5'2\"", "5'3\"", "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"", "5'11\"", "6'0\"", "6'1\""],
     }),
     defineField({
       name: 'isAvailable',
@@ -110,15 +178,22 @@ export default defineType({
   preview: {
     select: {
       title: 'title',
-      subtitle: 'description',
       media: 'images.0',
       price: 'priceNaira',
       isAvailable: 'isAvailable',
+      apparelTypes: 'apparelTypes',
+      tags: 'tags',
     },
-    prepare({ title, subtitle, media, price, isAvailable }) {
+    prepare({ title, media, price, isAvailable, apparelTypes, tags }) {
+      const category = apparelTypes?.length ? apparelTypes.join(', ') : '';
+      const isNew = tags?.includes('NEW') ? '🆕 ' : '';
       return {
-        title: title,
-        subtitle: `₦${price?.toLocaleString()} ${!isAvailable ? '• SOLD OUT' : ''}`,
+        title: `${isNew}${title}`,
+        subtitle: [
+          `₦${price?.toLocaleString() ?? '—'}`,
+          !isAvailable ? '• SOLD OUT' : '',
+          category ? `• ${category}` : '',
+        ].filter(Boolean).join(' '),
         media: media,
       };
     },

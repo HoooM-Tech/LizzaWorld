@@ -1,18 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Instagram, Search, ShoppingCart, Menu, X } from "lucide-react";
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { CartDrawer } from "@/components/cart-drawer";
 import { SearchDialog } from "@/components/search-dialog";
 import { useCart } from "@/components/cart-context";
+import { useCurrency, CURRENCIES } from "@/components/currency-context";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
   { href: "/bespoke", label: "Bespoke & Bridal" },
+  { href: "/about", label: "About" },
   { href: "/consultation", label: "Consultation" }
 ];
 
@@ -21,6 +23,13 @@ export function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { items } = useCart();
+  const { currency, setCurrencyCode } = useCurrency();
+
+  useEffect(() => {
+    const handleOpenCart = () => setIsCartOpen(true);
+    window.addEventListener("openCartDrawer", handleOpenCart);
+    return () => window.removeEventListener("openCartDrawer", handleOpenCart);
+  }, []);
 
   // Calculate total number of items in cart
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
@@ -32,19 +41,19 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             {/* Desktop: Show text logo */}
-            <span className="hidden md:block font-display text-xl tracking-[0.2em] text-[#ffff]">
+            <span className="hidden md:block font-display text-xl tracking-[0.2em] text-ivory">
               LIZZA ATELIER
             </span>
             {/* Mobile: Show image logo */}
             <img
               src="/logo.png"
               alt="Lizza Atelier"
-              className="md:hidden h-10 w-10 object-contain rounded-none color-[#ffff]"
+              className="md:hidden h-10 w-10 object-contain rounded-none text-ivory"
             />
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden items-center gap-10 text-sm uppercase tracking-[0.15em] text-[#ffff] lg:flex">
+          <nav className="hidden items-center gap-10 text-sm uppercase tracking-[0.15em] text-ivory lg:flex">
             {links.map((link) => (
               <Link key={link.href} href={link.href} className="transition hover:text-ivory">
                 {link.label}
@@ -54,30 +63,46 @@ export function Navbar() {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-2">
+            {/* Currency Switcher */}
+            <div className="relative mr-2">
+              <select
+                title="Select Currency"
+                value={currency.code}
+                onChange={(e) => setCurrencyCode(e.target.value)}
+                className="bg-transparent text-white border border-white/20 rounded-none px-2 py-1.5 text-[10px] tracking-wider uppercase focus:outline-none hover:border-white/50 transition cursor-pointer"
+              >
+                {Object.keys(CURRENCIES).map((code) => (
+                  <option key={code} value={code} className="text-charcoal bg-ivory">
+                    {code}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Desktop & Mobile Icons */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              aria-label="Search" 
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Search"
               onClick={() => setIsSearchOpen(true)}
               className="text-ivory hover:bg-ivory/10 hover:text-ivory"
             >
               <Search className="h-5 w-5" />
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              asChild 
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
               className="hidden md:flex text-ivory hover:bg-ivory/10 hover:text-ivory"
             >
-              <Link href="https://www.instagram.com/lizza.atelier" aria-label="Visit Instagram">
+              <Link href="https://www.instagram.com/lizzaatelier_" aria-label="Visit Instagram">
                 <Instagram className="h-5 w-5" />
               </Link>
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              aria-label="View cart" 
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="View cart"
               onClick={() => setIsCartOpen(true)}
               className="relative text-ivory hover:bg-ivory/10 hover:text-ivory"
             >
@@ -115,7 +140,7 @@ export function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm uppercase tracking-[0.2em] text-[#ffff] transition hover:text-ivory py-2"
+                    className="text-sm uppercase tracking-[0.2em] text-ivory transition hover:text-ivory py-2"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.label}
@@ -124,7 +149,7 @@ export function Navbar() {
                 <Link
                   href="https://www.instagram.com/lizzaatelier_?igsh=MTNsbTllZjhrYWFocA=="
                   target="_blank"
-                  className="text-sm uppercase tracking-[0.2em] text-[#ffff] transition hover:text-ivory py-2 flex items-center gap-2"
+                  className="text-sm uppercase tracking-[0.2em] text-ivory transition hover:text-ivory py-2 flex items-center gap-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <Instagram className="h-5 w-5" />

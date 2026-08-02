@@ -70,7 +70,7 @@ export default function WhyChooseUs({
               src={imageUrl}
               alt="Lizza Atelier Studio"
               fill
-              unoptimized
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
               className="object-cover grayscale opacity-80 rounded-sm"
             />
             <div className="absolute top-6 left-6">
