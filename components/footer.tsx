@@ -131,7 +131,7 @@ export function Footer() {
           <p className="font-semibold text-xs uppercase tracking-wider text-charcoal mb-4">About</p>
           <p>© {year} Lizza Atelier.</p>
           <p>Luxury with intention.</p>
-          <p className="text-xs text-charcoal/50">Made by HoooM</p>
+          <p className="font-semibold text-xs text-charcoal/50">Made by HoooM</p>
           <div className="pt-2">
             <select
               title="Select Currency"
