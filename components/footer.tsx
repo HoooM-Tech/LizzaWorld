@@ -80,7 +80,7 @@ export function Footer() {
           <p className="text-sm text-charcoal/70">
             Lagos, Nigeria — By appointment only
           </p>
-          
+
           {/* Email Dropdown */}
           <div className="relative">
             <button
@@ -89,8 +89,8 @@ export function Footer() {
             >
               <Mail className="h-4 w-4" />
               <span>info@lizzaatelier.com</span>
-              <ChevronDown 
-                className={`h-4 w-4 transition-transform ${showEmails ? 'rotate-180' : ''}`} 
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${showEmails ? 'rotate-180' : ''}`}
               />
             </button>
 
@@ -131,7 +131,17 @@ export function Footer() {
           <p className="font-semibold text-xs uppercase tracking-wider text-charcoal mb-4">About</p>
           <p>© {year} Lizza Atelier.</p>
           <p>Luxury with intention.</p>
-          <p className="font-semibold text-xs text-charcoal/50">Made by HoooM</p>
+          <p className="font-semibold text-sm text-charcoal/50">
+            Made by{" "}
+            <a
+              href="https://www.hooom.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline hover:text-charcoal transition"
+            >
+              HoooM
+            </a>
+          </p>
           <div className="pt-2">
             <select
               title="Select Currency"
